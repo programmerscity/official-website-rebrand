@@ -1,4 +1,10 @@
+# Folders
 node_modules/
 vendor/
+
+
+
+# Files
 public/css/styles.css
 public/css/dev_styles.css
+.env
