@@ -19,10 +19,7 @@ $dotenv->load();
 <body>
     <?php include_once './components/header.html' ?>
     <main class="min-h-screen">
-        <h1>
-            Hello, <?php echo $_ENV['APP_NAME'] ?? 'Procity' ?>
-        </h1>
-        <iconify-icon icon="heroicons-outline:chat" class="text-primary text-7xl"></iconify-icon>
+        <?php include_once './components/home/hero.html' ?>
 
         <img src="./assets/images/icon.png" alt="logo">
 
