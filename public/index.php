@@ -18,7 +18,7 @@ $dotenv->load();
 
 <body>
     <?php include_once './components/header.html' ?>
-    <main class="min-h-screen">
+    <main class="min-h-screen bg-amber-300">
         <h1>
             Hello, <?php echo $_ENV['APP_NAME'] ?? 'Procity' ?>
         </h1>
