@@ -20,8 +20,9 @@ $dotenv->load();
     <?php include_once './components/header.html' ?>
     <main class="min-h-screen">
         <?php include_once './components/home/hero.html' ?>
-
-        <img src="./assets/images/icon.png" alt="logo">
+        <?php include_once './components/home/choose-path.html' ?>
+        <?php include_once './components/home/services.html' ?>
+        <?php include_once './components/home/why-choose-us.html' ?>
 
     </main>
     <?php include_once './components/footer.html' ?>
