@@ -22,12 +22,12 @@ $dotenv->load();
         <h1>
             Hello, <?php echo $_ENV['APP_NAME'] ?? 'Procity' ?>
         </h1>
-        <iconify-icon icon="heroicons-outline:chat" class="text-primary text-7xl"></iconify-icon>
 
         <img src="./assets/images/icon.png" alt="logo">
 
     </main>
     <?php include_once './components/footer.html' ?>
+    <?php include_once './components/home/chatbox.html' ?>
 </body>
 
 </html>
