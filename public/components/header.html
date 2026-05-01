@@ -1,17 +1,83 @@
-<header class="capitalize py-6 sticky top-0">
-    <div class="mx-auto max-w-5xl bg-white/50 backdrop-blur min-h-12 border border-primary rounded-full flex justify-between items-center py-4.5 px-4">
-        <aside>
-            <a href="/">
-                <img src="assets/images/icon.png" alt="logo" class="h-8">
-            </a>
-        </aside>
-        <aside>
-            nav
-        </aside>
-        <aside>
-            <a href="" class="bg-primary text-white px-4 py-3.5 rounded-4xl">
-                Contact Us
-            </a>
-        </aside>
-    </div>
+<header class="capitalize lg:py-6 pb-3 sticky top-0">
+  <div
+    class="mx-auto max-w-5xl bg-white/50 backdrop-blur min-h-12 lg:border border-b border-theme-light lg:rounded-full flex justify-between items-center py-4.5 px-4"
+  >
+    <aside>
+      <a href="/">
+        <img src="assets/images/icon.png" alt="logo" class="h-8" />
+      </a>
+    </aside>
+    <nav class="hidden lg:flex  lg:gap-8 items-center justify-between ">
+      <ul class="hidden lg:flex  gap-3.25 flex-col lg:flex-row">
+        <li class="nav-links">
+          <a href="#">Home</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">Services</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">Portfolio</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">Blog</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">Testimonial</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">About Us</a>
+        </li>
+      </ul>  
+    </nav>
+
+    <aside class="hidden lg:block">
+        <a
+          href=""
+          class="bg-primary lg:inline hover:bg-primary-dark transition-all duration-300 hover:drop-shadow-primary-dark hover:shadow-sm text-white px-4 py-3.5 rounded-4xl"
+        >
+          Contact Us
+        </a>
+      </aside>
+
+    <button class="lg:hidden block border border-theme-light rounded-lg p-px">
+      <iconify-icon
+        class="flex justify-center items-center text-primary"
+        icon="material-symbols:menu-rounded"
+        width="34"
+        height="34"
+      ></iconify-icon>
+    </button>
+
+    <!--------------- Mobile Menu ----------->
+     <nav class="lg:hidden fixed h-dvh top-0 -right-px w-55 md:w-75 flex flex-col gap-6.25 bg-white/95 backdrop-blur pl-3.75 ">
+      <ul class="lg:hidden flex gap-2 flex-col ">
+        <li class="nav-links">
+          <a href="#">Home</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">Services</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">Portfolio</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">Blog</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">Testimonial</a>
+        </li>
+        <li class="nav-links">
+          <a href="#">About Us</a>
+        </li>
+      </ul>
+      <div>
+        <a
+          href=""
+          class="bg-primary lg:inline hover:bg-primary-dark transition-all duration-300 hover:drop-shadow-primary-dark hover:shadow-sm text-white px-4 py-3.5 rounded-4xl"
+        >
+          Contact Us
+        </a>
+      </d>
+    </nav>
+  </div>
 </header>
