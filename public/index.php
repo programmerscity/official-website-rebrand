@@ -17,16 +17,18 @@ $dotenv->load();
 </head>
 
 <body>
-    <?php include_once './components/header.html' ?>
+    <?php // include_once './components/header.html' ?>
     <main class="min-h-screen">
-        <?php include_once './components/home/hero.html' ?>
-        <?php include_once './components/home/choose-path.html' ?>
-        <?php include_once './components/home/services.html' ?>
+        <?php // include_once './components/home/hero.html' ?>
+        <?php // include_once './components/home/choose-path.html' ?>
+        <?php// include_once './components/home/services.html' ?>
         <?php include_once './components/home/why-choose-us.html' ?>
+        <?php //include_once './components/home/what-our-client-says.html' ?>
+
 
     </main>
-    <?php include_once './components/footer.html' ?>
-    <?php include_once './components/home/chatbox.html' ?>
+    <?php// include_once './components/footer.html' ?>
+    <?php //include_once './components/home/chatbox.html' ?>
 </body>
 
 </html>
