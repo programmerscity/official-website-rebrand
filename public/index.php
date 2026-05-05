@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..\/');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 ?>
 <!DOCTYPE html>
@@ -18,16 +18,14 @@ $dotenv->load();
 
 <body>
     <?php include_once './components/header.html' ?>
-    <main class="min-h-screen bg-amber-300">
-        <h1>
-            Hello, <?php echo $_ENV['APP_NAME'] ?? 'Procity' ?>
-        </h1>
-        <iconify-icon icon="heroicons-outline:chat" class="text-primary text-7xl"></iconify-icon>
-
-        <img src="./assets/images/icon.png" alt="logo">
-
+    <main class="min-h-screen">
+        <?php include_once './components/home/hero.html' ?>
+        <?php include_once './components/home/choose-path.html' ?>
+        <?php include_once './components/home/services.html' ?>
+        <?php include_once './components/home/why-choose-us.html' ?>
     </main>
     <?php include_once './components/footer.html' ?>
+    <?php include_once './components/home/chatbox.html' ?>
 </body>
 
 </html>
