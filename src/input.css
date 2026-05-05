@@ -1,12 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0b83de;
-  --color-primary-dark: #0d3796;
-  --color-secondary: #0f172a;
-  --color-theme-light: #e2e8f0;
-}
-
-.nav-links {
-  @apply hover:text-primary transition-all duration-300 hover:underline active:text-primary underline-offset-6;
+    --color-primary: #0B83DE;
+    --color-primary-dark: #0D3796;
+    --color-secondary: #0F172A;
+    --color-secondary-light: #475569;
+    --color-theme-light: #E2E8F0;
+    --color-main-theme: #F8FAFC;
 }
