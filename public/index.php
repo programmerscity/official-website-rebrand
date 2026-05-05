@@ -22,7 +22,7 @@ $dotenv->load();
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
-<body>
+<body class="bg-main-theme">
     <?php include_once './components/header.html' ?>
     <main class="min-h-screen">
         <?php include_once './components/home/hero.html' ?>
