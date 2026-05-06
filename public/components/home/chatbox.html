@@ -1,8 +1,9 @@
 <section class="fixed bottom-3 right-7">
-    <button class=" bg-primary text-white rounded-full h-16 w-16 shadow-xl flex items-center justify-center hidden">
+    <button class=" bg-primary text-white rounded-full h-16 w-16 shadow-xl flex items-center justify-center relative">
         <iconify-icon icon="heroicons-outline:chat" class="text-white text-[32px]"></iconify-icon>
+        <div class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"></div>
     </button>
-    <div class="flex flex-col gap-2 items-end">
+    <div class="flex flex-col gap-2 items-end hidden">
         <div class="h-151.25 max-h-[83dvh] w-112.5 rounded-[20px] border border-theme-light bg-theme-light flex flex-col justify-between overflow-hidden">
             <aside class="px-5 py-6 bg-linear-to-r from-primary to-primary-dark text-white">
                 <div>
@@ -17,7 +18,7 @@
                             <iconify-icon class="text-white w-6 h-6" icon="solar:user-linear" width="24" height="24"></iconify-icon>
                         </div>
                         <div class="w-69.25 h-21 rounded-r-2xl rounded-br-2xl rounded-bl-2xl border border-theme-light p-4 gap-2.5 bg-white">
-                            <p class="w-61.25 h-13 text-[16px] text-[#475569]">
+                            <p class="w-61.25 h-13 text-[16px] text-secondary-light">
                                 Hi there! 👋 How can we help you today?
                             </p>
                         </div>
@@ -25,7 +26,7 @@
 
                     <div class="flex w-73.5 h-14.5 pl-19.5 gap-3">
                         <div class="w-54 h-14.5 rounded-2xl border border-theme-light p-4 gap-2.5 bg-white flex">
-                            <p class="w-46 h-6.5 text-[#475569]">
+                            <p class="w-46 h-6.5 text-secondary-light">
                                 I want to build a product
                             </p>
                         </div>
@@ -42,7 +43,7 @@
 
                     <div class="flex w-73.5 h-14.5 pl-19.5 gap-3">
                         <div class="w-54 h-14.5 rounded-2xl border border-theme-light p-4 gap-2.5 bg-white flex">
-                            <p class="w-46 h-6.5 text-[#475569]">
+                            <p class="w-46 h-6.5 text-secondary-light">
                                 I want to learn tech skills
                             </p>
                         </div>
@@ -51,7 +52,7 @@
             </aside>
             <aside class="bg-white px-7 py-4 flex gap-6" >
                 <div >
-                    <input type="text" required placeholder="Type your message..." class="w-73.5 text-[#475569] border-2 border-theme-light h-15 py-5 px-5 rounded-3xl focus:border-primary focus:bg-white focus:outline">
+                    <input type="text" required placeholder="Type your message..." class="w-73.5 text-secondary-light border-2 border-theme-light h-15 py-5 px-5 rounded-3xl focus:border-primary focus:bg-white focus:outline">
                 </div>
                 <div>
                     <button class=" flex justify-center items-center h-15 py-5 px-8 gap-2.5 w-21 rounded-2xl bg-primary hover:bg-primary-dark transition-all duration-700">
