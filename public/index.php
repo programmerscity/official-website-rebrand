@@ -29,6 +29,8 @@ $dotenv->load();
         <?php include_once './components/home/choose-path.html' ?>
         <?php include_once './components/home/services.html' ?>
         <?php include_once './components/home/why-choose-us.html' ?>
+        <?php include_once './components/home/featured-projects.html' ?>
+
 
     </main>
     <?php include_once './components/footer.html' ?>
