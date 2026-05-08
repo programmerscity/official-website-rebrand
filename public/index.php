@@ -22,16 +22,14 @@ $dotenv->load();
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
-<body>
+<body class="bg-main-theme text-secondary font-inter">
     <?php include_once './components/header.html' ?>
     <main class="min-h-screen">
         <?php include_once './components/home/hero.html' ?>
         <?php include_once './components/home/choose-path.html' ?>
         <?php include_once './components/home/services.html' ?>
         <?php include_once './components/home/why-choose-us.html' ?>
-        <?php //include_once './components/home/what-our-client-says.html' ?>
-
-
+        <?php include_once './components/home/what-our-client-says.html' ?>
         <?php include_once './components/home/our-process.html' ?>
     </main>
     <?php include_once './components/footer.html' ?>
