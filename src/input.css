@@ -48,13 +48,10 @@
   }
 }
 
-@media screen and (min-width: 768px) and (max-width: 1199px) {
-  .process-card-container
-    div:nth-child(odd)
-    section.designed-line-card
-    hr:first-child {
-    visibility: hidden;
-  }
+@media screen and (min-width:768px)  and (max-width:1023px) {
+    .process-card-container div:nth-child(odd) section.designed-line-card hr:first-child {
+        visibility: hidden;
+    }
 
   .process-card-container
     div:nth-child(even)
