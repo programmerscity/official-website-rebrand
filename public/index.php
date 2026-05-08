@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..\/');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 ?>
 <!DOCTYPE html>
@@ -22,13 +22,15 @@ $dotenv->load();
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
-<body class="bg-main-theme">
+<body class="bg-main-theme text-secondary font-inter">
     <?php include_once './components/header.html' ?>
     <main class="min-h-screen">
         <?php include_once './components/home/hero.html' ?>
         <?php include_once './components/home/choose-path.html' ?>
         <?php include_once './components/home/services.html' ?>
         <?php include_once './components/home/why-choose-us.html' ?>
+        <?php include_once './components/home/blog-section.html' ?>
+        <?php include_once './components/home/what-our-client-says.html' ?>
         <?php include_once './components/home/our-process.html' ?>
         <?php include_once './components/home/featured-projects.html' ?>
     </main>

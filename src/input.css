@@ -1,55 +1,64 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #0B83DE;
-    --color-primary-dark: #0D3796;
-    --color-primary-light: #BEDBFF;
-    --color-secondary: #0F172A;
-    --color-secondary-light: #475569;
-    --color-theme-light: #E2E8F0;
-    --color-main-theme: #F8FAFC;
+  --color-primary: #0b83de;
+  --color-primary-dark: #0d3796;
+  --color-primary-light: #bedbff;
+  --color-secondary: #0f172a;
+  --color-secondary-light: #475569;
+  --color-theme-light: #e2e8f0;
+  --color-main-theme: #f8fafc;
 }
 
 .designed-line-card hr:first-child::before {
-    content: "";
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    background-color: var(--color-primary-light);
-    left: -4px;
-    top: 42%;
-    transform: rotate(45deg);
+  content: "";
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  background-color: var(--color-primary-light);
+  left: -4px;
+  top: 42%;
+  transform: rotate(45deg);
 }
 
 .designed-line-card hr:last-child::after {
-    content: "";
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    background-color: var(--color-primary-light);
-    right: -4px;
-    top: 42%;
-    transform: rotate(45deg)
+  content: "";
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  background-color: var(--color-primary-light);
+  right: -4px;
+  top: 42%;
+  transform: rotate(45deg);
 }
 
-@media screen and (min-width:1200px) {
-    .process-card-container div:first-child section.designed-line-card hr:first-child {
-        visibility: hidden;
-    }
+@media screen and (min-width: 1200px) {
+  .process-card-container
+    div:first-child
+    section.designed-line-card
+    hr:first-child {
+    visibility: hidden;
+  }
 
-    .process-card-container div:last-child section.designed-line-card hr:last-child {
-        visibility: hidden;
-    }
+  .process-card-container
+    div:last-child
+    section.designed-line-card
+    hr:last-child {
+    visibility: hidden;
+  }
 }
 
-@media screen and (min-width:768px)  and (max-width:1199px) {
+@media screen and (min-width:768px)  and (max-width:1023px) {
     .process-card-container div:nth-child(odd) section.designed-line-card hr:first-child {
         visibility: hidden;
     }
 
-    .process-card-container div:nth-child(even) section.designed-line-card hr:last-child {
-        visibility: hidden;
-    }
+  .process-card-container
+    div:nth-child(even)
+    section.designed-line-card
+    hr:last-child {
+    visibility: hidden;
+  }
 }
 
 /* .styled-line::before {
@@ -73,3 +82,7 @@
     top: 42%;
     transform: rotate(45deg);
 } */
+
+.active {
+  @apply text-primary border-b-2 border-primary;
+}
