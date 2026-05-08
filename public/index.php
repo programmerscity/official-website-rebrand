@@ -32,6 +32,7 @@ $dotenv->load();
         <?php include_once './components/home/blog-section.html' ?>
         <?php include_once './components/home/what-our-client-says.html' ?>
         <?php include_once './components/home/our-process.html' ?>
+        <?php include_once './components/home/featured-projects.html' ?>
     </main>
     <?php include_once './components/footer.html' ?>
     <?php include_once './components/home/chatbox.html' ?>
