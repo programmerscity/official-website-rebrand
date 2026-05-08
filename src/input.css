@@ -86,9 +86,6 @@
     transform: rotate(45deg);
 } */
 
-.nav-links:hover {
-  color: var(--color-primary);
-  text-decoration: underline;
-  text-underline-offset: 10px;
-  transition: all 0.3s;
+.active {
+  @apply text-primary border-b-2 border-primary;
 }
