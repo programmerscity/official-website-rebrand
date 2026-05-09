@@ -11,7 +11,7 @@ $dotenv->load();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome - <?php echo $_ENV['APP_NAME'] ?? 'Procity' ?></title>
     <link rel="stylesheet" href="<?php echo $_ENV['APP_ENV'] == 'dev' ? './css/dev_styles.css' : './css/styles.css' ?>" />
-    <link rel="shortcut icon" href="./assets/images/favicon.png" type="image/*">
+    <link rel="shortcut icon" href="./public/assets/images/favicon.png" type="image/*">
     <!-- Browser Iconify Library: https://icon-sets.iconify.design/ -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.2/dist/iconify-icon.min.js"></script>
     <!-- Google Fonts -->
