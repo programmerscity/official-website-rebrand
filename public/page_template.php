@@ -25,7 +25,7 @@ $dotenv->load();
 <body class="bg-main-theme text-secondary font-inter">
     <?php include_once './components/header.html' ?>
     <main class="min-h-screen">
-        <?php include_once './components/services/service-banner.html' ?>
+       <!-- Other PHP Included Page Contents -->
 
     </main>
     <?php include_once './components/footer.html' ?>
