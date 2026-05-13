@@ -1,0 +1,2 @@
+ items-center justify-center p-6 w-16 h-16 rounded-2xl bg-primary/15
+  h-102.75  items-center text-center justify-center
