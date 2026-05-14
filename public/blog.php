@@ -9,8 +9,8 @@ $dotenv->load();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome - <?php echo $_ENV['APP_NAME'] ?? 'Procity' ?></title>
-    <link rel="stylesheet" href="<?php echo $_ENV['APP_ENV'] == 'dev' ? './css/dev_styles.css' : './css/styles.css' ?>" />
+    <title>Blog - <?php echo $_ENV['APP_NAME'] ?? 'Procity' ?></title>
+    <link rel="stylesheet" href="<?php echo $_ENV['APP_ENV'] == 'dev' ? './public/css/dev_styles.css' : './public/css/styles.css' ?>" />
     <link rel="shortcut icon" href="./public/assets/images/favicon.png" type="image/*">
     <!-- Browser Iconify Library: https://icon-sets.iconify.design/ -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.2/dist/iconify-icon.min.js"></script>
