@@ -1,3 +1,61 @@
 <section>
-    Contact Form Section
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 py-16 px-4">
+        <!-- Contact Information and Form -->
+        <aside class="flex flex-col gap-6 flex-1 bg-white p-8 rounded-3xl shadow-lg">
+            <div>
+                <h2 class="text-2xl font-semibold mb-4 text-secondary">Send Us A Message</h2>
+                <p class="text-sm font-medium mb-6 text-secondary-light">
+                    Tell us about your project or what you need help with
+                </p>
+            </div>
+            <form action="" method="POST" class="flex flex-col gap-4.5 w-full">
+                <div class="flex flex-col gap-1">
+                    <label for="fullname" class="text-base font-semibold text-secondary">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" placeholder="Enter your name"
+                        class="theme-input-box" required>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="email" class="text-base font-semibold text-secondary">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" class="theme-input-box"
+                        required>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="phone" class="text-base font-semibold text-secondary">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number"
+                        class="theme-input-box">
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="subject" class="text-base font-semibold text-secondary">Subject</label>
+                    <input type="text" id="subject" name="subject" placeholder="Enter the subject"
+                        class="theme-input-box" required>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="message" class="text-base font-semibold text-secondary">How can we help you?</label>
+                    <textarea type="text" name="message" id="message" class="theme-input-box" rows="5"
+                        placeholder="Describe your inquiry..."></textarea>
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="bg-primary text-white py-4.5 px-6 rounded-4xl font-medium hover:bg-primary-dark transition-all duration-300">
+                        Send Message
+                    </button>
+                </div>
+            </form>
+        </aside>
+
+        <!-- Map Area and Address -->
+        <aside class="flex-1 h-full">
+            <div class="w-full h-full rounded-3xl overflow-hidden shadow-lg">
+                <iframe
+                    src="https://www.google.com/maps?q=programmers+city+software+hub&lat=5.472142593095575&lng=7.037536490996608&output=embed"
+                    width="100%" height="100%" style="border:0;" allowfullscreen loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </aside>
+    </div>
 </section>

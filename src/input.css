@@ -86,3 +86,7 @@
 .active {
   @apply text-primary border-b-2 border-primary hover:text-shadow-none hover:text-primary-dark transition-all duration-300;
 }
+
+.theme-input-box {
+  @apply w-full border border-theme-light rounded-2xl focus:outline-none py-4 px-4 focus:shadow focus:shadow-secondary-light/20 transition-all duration-300;
+}
