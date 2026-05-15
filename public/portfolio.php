@@ -25,6 +25,7 @@ $dotenv->load();
 <body class="bg-main-theme text-secondary font-inter">
     <?php include_once './components/header.html' ?>
     <main class="min-h-screen">
+         <?php include_once './components/portfolio/project-portfolio-hero.html' ?>
         <?php include_once './components/portfolio/project-portfolio.html' ?>
 
     </main>
