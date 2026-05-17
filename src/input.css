@@ -86,3 +86,15 @@
 .active {
   @apply text-primary border-b-2 border-primary hover:text-shadow-none hover:text-primary-dark transition-all duration-300;
 }
+
+.blog-content ul li, .blog-content ol li{
+  @apply ml-6;
+}
+
+.blog-content ul li{
+  @apply list-disc; 
+}
+
+.blog-content ol li{
+  @apply list-decimal;
+}
