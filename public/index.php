@@ -31,6 +31,7 @@ $dotenv->load();
         <?php include_once './components/home/why-choose-us.html' ?>
         <?php include_once './components/home/blog-section.html' ?>
         <?php include_once './components/home/what-our-client-says.html' ?>
+        <?php include_once './components/home/training-programs.html' ?>
         <?php include_once './components/home/our-process.html' ?>
         <?php include_once './components/home/featured-projects.html' ?>
     </main>
