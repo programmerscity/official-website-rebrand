@@ -36,6 +36,9 @@ $dotenv->load();
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
         AOS.init();
+        
+        // Set the anchor tag with hyper-reffernce (href) "./portfolio" to active
+        document.querySelectorAll('a[href="./portfolio"]').forEach(el => el.classList.add('active'));
     </script>
 </body>
 
