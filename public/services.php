@@ -26,7 +26,7 @@ $dotenv->load();
     <?php include_once './components/header.html' ?>
     <main class="min-h-screen">
         <?php include_once './components/services/service-banner.html' ?>
-
+        <?php include_once './components/services/our-services-section.html' ?>
     </main>
     <?php include_once './components/footer.html' ?>
     <?php include_once './components/home/chatbox.html' ?>
