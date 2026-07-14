@@ -8,31 +8,8 @@ $dotenv->load();
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Page Title -->
-    <title>About Us - Programmers City Software Hub | IT Training & Development</title>
-    
-    <!-- Primary Meta Tags -->
-    <meta name="description" content="Programmers City is a leading software development and IT training company in Nigeria. We build custom software and train the next generation of tech professionals. Learn about our team and mission.">
-    <meta name="keywords" content="Programmers City, software development company Nigeria, IT training Nigeria, software engineering, custom software solutions, tech training, Owerri tech hub">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph / Social Media Meta Tags -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="About Us - Programmers City Software Hub | IT Training & Development">
-    <meta property="og:description" content="Programmers City is a leading software development and IT training company in Nigeria. We build custom software and train the next generation of tech professionals.">
-    <meta property="og:url" content="https://programmerscity.com/about-us">
-    <meta property="og:site_name" content="Programmers City Software Hub">
-    <meta property="og:image" content="https://programmerscity.com/public/assets/images/og-image.jpg">
-
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="About Us - Programmers City Software Hub | IT Training & Development">
-    <meta name="twitter:description" content="Programmers City is a leading software development and IT training company in Nigeria. We build custom software and train the next generation of tech professionals.">
-    <meta name="twitter:image" content="https://programmerscity.com/public/assets/images/og-image.jpg">
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://programmerscity.com/about-us">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Programmers City Software Hub</title>
     <link rel="stylesheet" href="<?php echo $_ENV['APP_ENV'] == 'dev' ? './public/css/dev_styles.css' : './public/css/styles.css' ?>" />
     <link rel="shortcut icon" href="./public/assets/images/favicon.png" type="image/*">
     <!-- Browser Iconify Library -->
@@ -84,35 +61,6 @@ $dotenv->load();
             filter: grayscale(0%) opacity(1);
         }
     </style>
-
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "Programmers City Software Hub",
-            "url": "https://programmerscity.com",
-            "logo": "https://programmerscity.com/public/assets/images/logo.png",
-            "description": "Programmers City is a dual-purpose technology leader: a dedicated Software Development Hub and a comprehensive IT Training Institution.",
-            "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "181 Douglas Road, By Wetheral Junction, Owerri-Aba Road",
-                "addressLocality": "Owerri",
-                "addressRegion": "Imo State",
-                "addressCountry": "NG"
-            },
-            "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+234-901-960-6166",
-                "contactType": "Sales",
-                "availableLanguage": ["English"]
-            },
-            "sameAs": [
-                "https://www.facebook.com/programmerscityhub",
-                "https://www.instagram.com/programmers.city",
-                "https://www.linkedin.com/company/programmers-city"
-            ]
-        }
-    </script>
 </head>
 
 <body class="bg-main-theme text-secondary font-inter">
@@ -359,46 +307,46 @@ $dotenv->load();
                 </h4>
 
                 <div data-aos="fade-up" data-aos-delay="100"
-                    class="flex flex-wrap justify-center items-center gap-8 lg:gap-12 opacity-60">
+                    class="flex flex-wrap justify-center items-center gap-8 lg:gap-12 opacity-60 grayscale">
 
                     <!-- Partner 1: TechCorp -->
                     <div class="flex flex-col items-center justify-center gap-1.5 p-2">
-                        <img class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all"
-                            src="https://panpetglobal.com/build/assets/icon-512x512-C_rJ58aM.png"
+                        <img class="h-10 w-auto object-contain"
+                            src="https://placehold.co/120x50/1a202c/FFFFFF?text=Logo"
                             alt="TechCorp logo" />
-                        <span class="text-xs font-semibold text-secondary">Panpet Global Enterprise</span>
+                        <span class="text-xs font-semibold text-secondary">TechCorp</span>
                     </div>
 
                     <!-- Partner 2: NigeriaGov -->
                     <div class="flex flex-col items-center justify-center gap-1.5 p-2">
-                        <img class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all"
-                            src="https://silktakeliquidation.com/favicon.png"
+                        <img class="h-10 w-auto object-contain"
+                            src="https://placehold.co/120x50/1a202c/FFFFFF?text=Logo"
                             alt="NigeriaGov logo" />
-                        <span class="text-xs font-semibold text-secondary">Silktake</span>
+                        <span class="text-xs font-semibold text-secondary">NigeriaGov</span>
                     </div>
 
                     <!-- Partner 3: Digisol -->
                     <div class="flex flex-col items-center justify-center gap-1.5 p-2">
-                        <img class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all"
-                            src="https://digisolfarm.com/uploads/website-images/logo-2025-03-26-12-39-39-3871.png"
+                        <img class="h-10 w-auto object-contain"
+                            src="https://placehold.co/120x50/1a202c/FFFFFF?text=Logo"
                             alt="Digisol logo" />
-                        <span class="text-xs font-semibold text-secondary">Digisol Projects</span>
+                        <span class="text-xs font-semibold text-secondary">Digisol</span>
                     </div>
 
                     <!-- Partner 4: StartupHub -->
                     <div class="flex flex-col items-center justify-center gap-1.5 p-2">
-                        <img class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all"
-                            src="https://gridspiresoftware.com/build/assets/logo-BxRwEuRf.png"
+                        <img class="h-10 w-auto object-contain"
+                            src="https://placehold.co/120x50/1a202c/FFFFFF?text=Logo"
                             alt="StartupHub logo" />
-                        <span class="text-xs font-semibold text-secondary">Gridspire Software</span>
+                        <span class="text-xs font-semibold text-secondary">StartupHub</span>
                     </div>
 
                     <!-- Partner 5: DevGlobal -->
                     <div class="flex flex-col items-center justify-center gap-1.5 p-2">
-                        <img class="h-16 w-auto object-contain sm:grayscale hover:grayscale-0 transition-all bg-slate-900"
-                            src="https://bondlogisticsllc.com/images/bond_logo.png"
+                        <img class="h-10 w-auto object-contain"
+                            src="https://placehold.co/120x50/1a202c/FFFFFF?text=Logo"
                             alt="DevGlobal logo" />
-                        <span class="text-xs font-semibold text-secondary">Bond Logistics LLC</span>
+                        <span class="text-xs font-semibold text-secondary">DevGlobal</span>
                     </div>
 
                 </div>
@@ -406,7 +354,79 @@ $dotenv->load();
         </section>
 
         <!-- ======= 7. TEAM SECTION ======= -->
-        <!-- <team-section></team-section> -->
+        <section class="py-16 lg:py-24 bg-main-theme border-t border-theme-light/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col lg:flex-row justify-between items-end mb-12 gap-4">
+                    <div data-aos="fade-right" data-aos-duration="800">
+                        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary mb-4 tracking-tight">Meet the Team Behind the Innovation</h2>
+                        <p class="text-secondary-light text-lg max-w-2xl leading-relaxed">
+                            Our multidisciplinary team brings together software engineers, solution architects, UI/UX designers, project managers, and technology educators committed to delivering innovative digital solutions that help organizations achieve their goals.
+                        </p>
+                    </div>
+                    <a href="./staff" class="text-primary font-medium hover:text-primary-dark transition-colors duration-300 flex items-center gap-1 group">
+                        Explore All Staff
+                        <span class="inline-block transform transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                    </a>
+                </div>
+
+                <!-- Team Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+
+                    <!-- Member 1: Destiny -->
+                    <div data-aos="fade-up" data-aos-duration="800" data-aos-delay="100"
+                        class="bg-white rounded-2xl overflow-hidden border border-theme-light/60 shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div class="team-card-image w-full h-72 md:h-96 bg-secondary relative overflow-hidden">
+                            <img src="./public/assets/images/destiny.png"
+                                alt="Destiny Brotobor Emuobohwoghare"
+                                class="w-full h-full object-cover filter grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500" />
+                        </div>
+                        <div class="p-6 lg:p-8">
+                            <p class="text-secondary-light text-sm font-medium mb-1">Founder & CEO</p>
+                            <h3 class="text-xl font-bold text-secondary mb-3">Destiny Brotobor Emuobohwoghare</h3>
+                            <p class="text-secondary-light text-sm leading-relaxed">
+                                Destiny is the Founder and CEO of Programmers City Software Hub. With over 15 years of experience in software engineering, systems architecture, and technology consulting, he has led the successful delivery of enterprise software solutions, ERP systems, mobile applications, and digital transformation initiatives for businesses, educational institutions, and public sector organizations.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Member 2: Silver -->
+                    <div data-aos="fade-up" data-aos-duration="800" data-aos-delay="150"
+                        class="bg-white rounded-2xl overflow-hidden border border-theme-light/60 shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div class="team-card-image w-full h-72 md:h-96 bg-secondary relative overflow-hidden">
+                            <img src="./public/assets/images/silver.jpg"
+                                alt="Mrs. Silver Iwuji Destiny"
+                                class="w-full h-full object-cover filter grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500" />
+                        </div>
+                        <div class="p-6 lg:p-8">
+                            <p class="text-secondary-light text-sm font-medium mb-1">Head of Operations & HR</p>
+                            <h3 class="text-xl font-bold text-secondary mb-3">Mrs. Silver Iwuji Destiny</h3>
+                            <p class="text-secondary-light text-sm leading-relaxed">
+                                Silver brings exceptional organizational precision to our operations. An expert in product research, UI/UX design, and office management technology, she ensures seamless project management, client satisfaction, and smooth internal workflows.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Member 3: Godwin -->
+                    <div data-aos="fade-up" data-aos-duration="800" data-aos-delay="200"
+                        class="bg-white rounded-2xl overflow-hidden border border-theme-light/60 shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div class="team-card-image w-full h-72 md:h-96 bg-secondary relative overflow-hidden">
+                            <img src="./public/assets/images/godwin.png"
+                                alt="Godwin Inyene"
+                                class="w-full h-full object-cover filter grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500" />
+                        </div>
+                        <div class="p-6 lg:p-8">
+                            <p class="text-secondary-light text-sm font-medium mb-1">Lead Web Development Facilitator</p>
+                            <h3 class="text-xl font-bold text-secondary mb-3">Godwin Inyene</h3>
+                            <p class="text-secondary-light text-sm leading-relaxed">
+                                Godwin is a professional full‑stack developer dedicated to shaping the next generation of tech talent. He combines deep technical knowledge with a passion for teaching, ensuring our training programs deliver real‑world, industry‑ready skills.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
 
         <!-- ======= 8. BOTTOM CTA BANNER ======= -->
         <section class="px-4 sm:px-6 lg:px-8 pb-16 lg:pb-24 bg-main-theme">
@@ -416,8 +436,8 @@ $dotenv->load();
                     Whether you're looking to automate operations, develop enterprise software, launch a digital platform, or transform your organization through technology, our team is ready to help you achieve your goals.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="tel:+2349019606166" class="inline-block bg-primary hover:bg-primary-dark text-white font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-0.5">
-                        Call Us Now for a Free Consultation
+                    <a href="./contact-us" class="inline-block bg-primary hover:bg-primary-dark text-white font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-0.5">
+                        Schedule a Free Consultation
                     </a>
                     <a href="./services" class="inline-block bg-white hover:bg-theme-light text-secondary font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-0.5">
                         Explore Our Services

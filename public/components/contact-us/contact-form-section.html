@@ -89,6 +89,10 @@
         const submitBtn = document.getElementById('submitBtn');
         const formStatus = document.getElementById('form-status');
 
+        if (service) {
+            document.querySelector('input[name="subject"]').value = ('Inquiry: ' + service + ' service');
+        }
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault(); // Prevents the default GET submission
 

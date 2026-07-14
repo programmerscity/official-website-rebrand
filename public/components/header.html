@@ -1,28 +1,32 @@
 <!-- HEADER SECTION -->
-<header class="sticky top-0 lg:-top-5 z-50 pb-3 lg:py-6 transition-all duration-300">
+<header class="sticky top-0 md:-top-1 lg:-top-2 z-50 pb-3 md:py-3 lg:py-4 px-0 md:px-4 lg:px-0 transition-all duration-300">
   <div
-    class="mx-auto max-w-5xl bg-main-theme/80 lg:bg-white/30 backdrop-blur lg:border border-b border-theme-light lg:rounded-full flex justify-between items-center px-4 py-3.5 lg:py-4.5 shadow-sm lg:shadow-none transition-all duration-300">
+    class="mx-auto max-w-5xl bg-main-theme/80 md:bg-white/30 backdrop-blur md:border border-b border-theme-light md:rounded-full flex justify-between items-center px-4 py-3.5 md:py-4.5 shadow-sm md:shadow-none transition-all duration-300">
 
     <!-- Logo -->
     <aside>
       <a href="/" class="flex items-center gap-2">
-        <img src="public/assets/images/icon.png" alt="Programmers City Logo" class="h-8 lg:h-9 object-contain" />
+        <img src="public/assets/images/icon.png" alt="Programmers City Logo" class="h-8 md:h-9 object-contain" />
+        <span class="text-primary-dark font-semibold text-lg md:text-2xl leading-0 md:hidden">
+          <span class="uppercase text-sm font-black block">Procity</span> <br>
+          <span class="capitalize text-sm block -mt-1">Software Hub</span>
+        </span>
       </a>
     </aside>
 
-    <!-- Desktop Navigation -->
-    <nav class="hidden lg:flex items-center">
+    <!-- Desktop Navigation (now visible from md/tablet upward) -->
+    <nav class="hidden md:flex items-center">
       <ul class="flex gap-1">
         <li>
-          <a class="px-4 py-2 block text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300"
+          <a class="px-4 py-2 block text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300 text-sm lg:text-base"
             href="./">Home</a>
         </li>
         <li>
-          <a class="px-4 py-2 block text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300"
+          <a class="px-4 py-2 block text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300 text-sm lg:text-base"
             href="./services">Services</a>
         </li>
         <li>
-          <a class="px-4 py-2 block text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300"
+          <a class="px-4 py-2 block text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300 text-sm lg:text-base"
             href="./portfolio">Portfolio</a>
         </li>
         <!-- <li>
@@ -34,24 +38,24 @@
             href="./testimonial">Testimonial</a>
         </li> -->
         <li>
-          <a class="px-4 py-2 block text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300"
+          <a class="px-4 py-2 block text-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-300 text-sm lg:text-base"
             href="./about-us">About Us</a>
         </li>
       </ul>
     </nav>
 
-    <!-- Desktop CTA -->
-    <aside class="hidden lg:block">
+    <!-- Desktop CTA (now visible from md/tablet upward) -->
+    <aside class="hidden md:block">
       <a href="./contact-us"
-        class="inline-flex items-center gap-2 justify-center bg-primary hover:bg-primary-dark text-white font-medium px-6 py-2.5 rounded-full shadow-sm shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300">
+        class="inline-flex items-center gap-2 justify-center bg-primary hover:bg-primary-dark text-white font-medium px-6 py-2.5 rounded-full shadow-sm shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300 text-sm lg:text-base border border-white/50">
         <iconify-icon icon="tabler:headset" class="text-xl"></iconify-icon>
         <span>Contact Us</span>
       </a>
     </aside>
 
-    <!-- Mobile Hamburger Button -->
+    <!-- Mobile Hamburger Button (hidden from md/tablet upward) -->
     <button id="menu-toggle"
-      class="lg:hidden flex items-center justify-center w-10 h-10 text-primary bg-transparent hover:bg-primary/10 rounded-lg border border-theme-light/70 transition-colors duration-200">
+      class="md:hidden flex items-center justify-center w-10 h-10 text-primary bg-transparent hover:bg-primary/10 rounded-lg border border-theme-light/70 transition-colors duration-200">
       <iconify-icon class="text-3xl" icon="material-symbols:menu-rounded"></iconify-icon>
     </button>
 
@@ -101,7 +105,7 @@
   </nav>
 </header>
 
-<!-- Mobile Menu Control Script -->
+<!-- Mobile Menu Control Script (unchanged) -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById('menu-toggle');
