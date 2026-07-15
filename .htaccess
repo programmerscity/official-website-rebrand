@@ -1,56 +1,64 @@
 # Turn on the rewrite engine
 RewriteEngine On
 
-# Force HTTPS except on localhost (commented for localhost development)
+# =============================================
+# 1. Force HTTPS (except on localhost)
+# =============================================
 RewriteCond %{HTTP_HOST} !^localhost$ [NC]
 RewriteCond %{HTTP_HOST} !^127\.0\.0\.1$ [NC]
 RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
 
-# Remove trailing slashes (optional but good for SEO)
+# =============================================
+# 2. Remove trailing slashes (SEO friendly)
+#    Only for non-existent directories and files
+# =============================================
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} (.+)/$
-RewriteRule ^ %1 [R=301,L]
+RewriteCond %{REQUEST_URI} /$ [NC]
+RewriteRule ^(.+)/$ /$1 [R=301,L,NE]
 
-# 1. Remove /public/ from the URL (internally rewrite to public directory)
-# 2. Remove .php extension (show page without extension)
-
-# First, check if request is for an existing file/directory/link
-RewriteCond %{REQUEST_FILENAME} !-d
+# =============================================
+# 3. Clean URLs for Services
+#    /service/slug -> public/service-details.php?slug=slug
+# =============================================
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-l
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^service/([a-zA-Z0-9-]+)$ public/service-details.php?slug=$1 [L,QSA]
 
-# Then, internally rewrite to public/{request}.php
-# Example: /about -> public/about.php
-# Example: /services -> public/services.php
+# =============================================
+# 4. Clean URLs for Projects
+#    /project/slug -> public/project-details.php?slug=slug
+# =============================================
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^project/([a-zA-Z0-9-]+)$ public/project-details.php?slug=$1 [L,QSA]
+
+# =============================================
+# 5. Generic Page Routing
+#    /page -> public/page.php
+#    /subdir/page -> public/subdir/page.php
+# =============================================
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([^/.]+)$ public/$1.php [L]
 
-# Handle URLs with optional trailing slash
-RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule ^([^/.]+)/$ public/$1.php [L]
-
-# Handle subdirectories (if you have any inside public)
-# Example: /admin/dashboard -> public/admin/dashboard.php
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-l
 RewriteRule ^([^/]+)/([^/.]+)$ public/$1/$2.php [L]
 
-# Redirect any direct access to public/ or .php files back to clean URL
-# This ensures search engines don't index duplicate content
+# =============================================
+# 6. Redirect .php URLs to clean URLs (SEO)
+#    Prevents duplicate content
+# =============================================
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.php [NC]
+RewriteRule ^ %1 [R=301,L,NE]
 
-# Redirect /public/page to /page
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/public/([^.\s]+)\.php [NC]
-RewriteRule ^ /%1 [R=301,L]
-
-# Redirect /page.php to /page
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.\s]+)\.php [NC]
-RewriteRule ^ /%1 [R=301,L]
-
-# Optional: Set the default index page
+# =============================================
+# 7. Default index page
+# =============================================
 DirectoryIndex public/index.php
 
-# Optional: Prevent directory listing
+# =============================================
+# 8. Security: Prevent directory listing
+# =============================================
 Options -Indexes

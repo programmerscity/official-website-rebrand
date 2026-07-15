@@ -1,0 +1,484 @@
+[
+  {
+    "id": 1,
+    "slug": "custom-software-development",
+    "title": "Custom Software Development",
+    "pageTitle": "Custom Software Development | Programmers City",
+    "heroTitle": "Tailor‑Made Software That Drives Operational Efficiency",
+    "heroDescription": "We design and develop secure, scalable web platforms and business systems that automate operations, improve customer experiences, and accelerate business growth—built around your unique workflows, not rigid templates.",
+    "ctaButtonText": "Get a Custom Quote",
+    "heroImage": "./public/assets/images/service-software.png",
+    "imageAlt": "Custom software development illustration",
+    "overviewTitle": "Software Designed for the Way You Work",
+    "overviewDescription": "Off‑the‑shelf software forces you to adapt your business. We do the opposite. We build custom applications that fit your processes perfectly—digitising manual tasks, connecting fragmented data, and giving your team the tools they need to deliver results faster.",
+    "stat1": "100+",
+    "stat1Label": "Projects Delivered",
+    "stat2": "98%",
+    "stat2Label": "Client Retention",
+    "featuresTitle": "What Our Custom Software Delivers",
+    "features": [
+      {
+        "icon": "mdi:workflow",
+        "title": "Workflow Automation",
+        "description": "Eliminate repetitive manual tasks and reduce human error with intelligent automation."
+      },
+      {
+        "icon": "mdi:api",
+        "title": "Seamless Integrations",
+        "description": "Connect your existing CRM, ERP, and third‑party tools into a unified ecosystem."
+      },
+      {
+        "icon": "mdi:chart-bar",
+        "title": "Real‑time Reporting",
+        "description": "Turn raw data into actionable business intelligence with custom dashboards."
+      },
+      {
+        "icon": "mdi:scale-balance",
+        "title": "Scalable Architecture",
+        "description": "Built to grow with your organisation, from startup to enterprise."
+      },
+      {
+        "icon": "mdi:shield-check",
+        "title": "Enhanced Security",
+        "description": "Role‑based access, encryption, and compliance with industry standards."
+      }
+    ],
+    "processSubtext": "We take a collaborative approach to ensure the final product delivers measurable business value.",
+    "ctaHeading": "Ready to Streamline Your Operations?",
+    "ctaDescription": "Let's discuss your requirements and build a software solution that gives you a competitive edge.",
+    "ctaButton": "Schedule a Free Consultation",
+    "metaDescription": "Get custom software development tailored to your business. We build secure, scalable systems that automate operations, improve efficiency, and drive growth.",
+    "metaKeywords": "custom software development, business software, enterprise systems, web applications, software automation, Nigeria",
+    "canonicalUrl": "https://programmerscity.com/service-details.php?slug=custom-software-development",
+    "ogTitle": "Custom Software Development | Programmers City",
+    "ogDescription": "Tailor‑made software that drives operational efficiency. We build secure, scalable systems to automate and grow your business.",
+    "ogImage": "./public/assets/images/service-software.png",
+    "ogUrl": "https://programmerscity.com/service-details.php?slug=custom-software-development",
+    "twitterTitle": "Custom Software Development | Programmers City",
+    "twitterDescription": "Custom software built to automate operations and accelerate growth.",
+    "twitterImage": "./public/assets/images/service-software.png"
+  },
+  {
+    "id": 2,
+    "slug": "mobile-app-development",
+    "title": "Mobile App Development",
+    "pageTitle": "Mobile App Development | Programmers City",
+    "heroTitle": "Mobile Apps That Connect You to Your Customers",
+    "heroDescription": "Build intuitive, high‑performance Android and iOS applications that keep your customers engaged, your employees productive, and your business accessible from anywhere—at any time.",
+    "ctaButtonText": "Start Your Mobile Project",
+    "heroImage": "./public/assets/images/service-mobile.png",
+    "imageAlt": "Mobile app development illustration",
+    "overviewTitle": "Reach Your Audience Wherever They Are",
+    "overviewDescription": "With over 6 billion smartphone users globally, a mobile presence is no longer optional. We develop native and cross‑platform apps that deliver seamless user experiences, boost customer loyalty, and open new revenue channels for your business.",
+    "stat1": "50+",
+    "stat1Label": "Apps Launched",
+    "stat2": "4.8★",
+    "stat2Label": "Average User Rating",
+    "featuresTitle": "What Makes Our Apps Stand Out",
+    "features": [
+      {
+        "icon": "mdi:design",
+        "title": "User‑Centric Design",
+        "description": "Intuitive interfaces that keep users coming back for more."
+      },
+      {
+        "icon": "mdi:wifi-off",
+        "title": "Offline Capabilities",
+        "description": "Functionality even without an internet connection."
+      },
+      {
+        "icon": "mdi:bell",
+        "title": "Push Notifications & Alerts",
+        "description": "Re‑engage users with timely, relevant messages."
+      },
+      {
+        "icon": "mdi:credit-card",
+        "title": "Secure Payment Gateways",
+        "description": "Integrated with leading payment processors."
+      },
+      {
+        "icon": "mdi:chart-line",
+        "title": "Analytics & Tracking",
+        "description": "Understand user behaviour to optimise engagement and retention."
+      }
+    ],
+    "processSubtext": "From ideation to App Store and Play Store deployment, we handle everything.",
+    "ctaHeading": "Ready to Go Mobile?",
+    "ctaDescription": "Let's turn your app idea into a powerful tool that grows your business.",
+    "ctaButton": "Get a Free App Estimate",
+    "metaDescription": "We build high‑performance Android and iOS apps that engage customers, boost loyalty, and drive revenue. Get a free estimate today.",
+    "metaKeywords": "mobile app development, Android app, iOS app, cross‑platform, React Native, Flutter, Nigeria",
+    "canonicalUrl": "https://programmerscity.com/service-details.php?slug=mobile-app-development",
+    "ogTitle": "Mobile App Development | Programmers City",
+    "ogDescription": "Build intuitive mobile apps for Android and iOS – connect with customers anytime, anywhere.",
+    "ogImage": "./public/assets/images/service-mobile.png",
+    "ogUrl": "https://programmerscity.com/service-details.php?slug=mobile-app-development",
+    "twitterTitle": "Mobile App Development | Programmers City",
+    "twitterDescription": "Custom mobile apps that drive customer engagement and revenue.",
+    "twitterImage": "./public/assets/images/service-mobile.png"
+  },
+  {
+    "id": 3,
+    "slug": "erp-business-automation",
+    "title": "ERP & Business Automation",
+    "pageTitle": "ERP & Business Automation | Programmers City",
+    "heroTitle": "Automate Your Operations with Integrated ERP Solutions",
+    "heroDescription": "Replace disconnected spreadsheets and manual processes with a unified ERP system that connects departments, automates workflows, and provides real‑time business insights—helping you make faster, smarter decisions.",
+    "ctaButtonText": "Explore ERP Solutions",
+    "heroImage": "./public/assets/images/service-erp.png",
+    "imageAlt": "ERP and business automation illustration",
+    "overviewTitle": "One System. Complete Visibility.",
+    "overviewDescription": "Your business deserves more than fragmented tools. We design custom ERP and automation platforms that integrate finance, HR, inventory, sales, and procurement into a single source of truth—eliminating data silos and improving cross‑departmental collaboration.",
+    "stat1": "40+",
+    "stat1Label": "Automation Projects",
+    "stat2": "65%",
+    "stat2Label": "Average Efficiency Gain",
+    "featuresTitle": "What ERP & Automation Delivers",
+    "features": [
+      {
+        "icon": "mdi:finance",
+        "title": "Finance & Accounting",
+        "description": "Automate invoicing, expense tracking, and financial reporting."
+      },
+      {
+        "icon": "mdi:warehouse",
+        "title": "Inventory & Supply Chain",
+        "description": "Real‑time stock management and procurement automation."
+      },
+      {
+        "icon": "mdi:account-group",
+        "title": "HR & Payroll",
+        "description": "Employee data, attendance, and payroll in one unified system."
+      },
+      {
+        "icon": "mdi:sales",
+        "title": "CRM & Sales",
+        "description": "Track leads, manage pipelines, and close deals faster."
+      },
+      {
+        "icon": "mdi:view-dashboard",
+        "title": "Custom Dashboards",
+        "description": "Role‑based views for every department."
+      }
+    ],
+    "processSubtext": "We map your existing workflows, identify bottlenecks, and design an automation strategy that delivers measurable ROI.",
+    "ctaHeading": "Ready to Automate Your Business?",
+    "ctaDescription": "Let's discuss how an integrated ERP system can transform your operations.",
+    "ctaButton": "Book a Discovery Call",
+    "metaDescription": "Implement custom ERP and automation solutions to connect departments, automate workflows, and gain real‑time business insights. Get a discovery call.",
+    "metaKeywords": "ERP, business automation, enterprise resource planning, workflow automation, Nigeria",
+    "canonicalUrl": "https://programmerscity.com/service-details.php?slug=erp-business-automation",
+    "ogTitle": "ERP & Business Automation | Programmers City",
+    "ogDescription": "Unified ERP systems that automate workflows and provide real‑time business insights.",
+    "ogImage": "./public/assets/images/service-erp.png",
+    "ogUrl": "https://programmerscity.com/service-details.php?slug=erp-business-automation",
+    "twitterTitle": "ERP & Business Automation | Programmers City",
+    "twitterDescription": "Integrate and automate your business operations with custom ERP solutions.",
+    "twitterImage": "./public/assets/images/service-erp.png"
+  },
+  {
+    "id": 4,
+    "slug": "ui-ux-design",
+    "title": "UI/UX Design",
+    "pageTitle": "UI/UX Design & Product Research | Programmers City",
+    "heroTitle": "Design That Delivers Exceptional User Experiences",
+    "heroDescription": "We combine deep product research, user psychology, and rigorous acceptance criteria to design interfaces that are not only beautiful but also intuitive, accessible, and aligned with your business goals—reducing development rework and accelerating time‑to‑market.",
+    "ctaButtonText": "Discuss Your Design Needs",
+    "heroImage": "./public/assets/images/service-design.jpg",
+    "imageAlt": "UI/UX design and product research illustration",
+    "overviewTitle": "Research‑Driven Design for Real‑World Impact",
+    "overviewDescription": "Great design starts with understanding. We conduct thorough user research, define clear acceptance criteria, and create design systems that ensure consistency. Our process minimises ambiguity, so development teams know exactly what to build, and users get an experience they love.",
+    "stat1": "80+",
+    "stat1Label": "Design Projects",
+    "stat2": "95%",
+    "stat2Label": "User Satisfaction",
+    "featuresTitle": "Our End‑to‑End Design Process",
+    "features": [
+      {
+        "icon": "mdi:microscope",
+        "title": "Product Discovery & Research",
+        "description": "User interviews, competitor analysis, and journey mapping."
+      },
+      {
+        "icon": "mdi:check-circle-outline",
+        "title": "Acceptance Criteria Definition",
+        "description": "Clear, testable criteria to align design and development."
+      },
+      {
+        "icon": "mdi:vector-polyline",
+        "title": "Wireframing & Prototyping",
+        "description": "Low‑fidelity sketches to high‑fidelity interactive prototypes."
+      },
+      {
+        "icon": "mdi:palette",
+        "title": "UI Design & Design Systems",
+        "description": "Reusable components for brand consistency and speed."
+      },
+      {
+        "icon": "mdi:test-tube",
+        "title": "Usability Testing",
+        "description": "Validate designs with real users before a single line of code is written."
+      }
+    ],
+    "processSubtext": "We bridge the gap between what users need and what developers build.",
+    "ctaHeading": "Ready to Design a Product Users Love?",
+    "ctaDescription": "Let's collaborate to create a seamless digital experience that drives adoption and retention.",
+    "ctaButton": "Schedule a Design Consultation",
+    "metaDescription": "Research‑driven UI/UX design that improves usability, adoption, and customer satisfaction. We combine product research with design excellence.",
+    "metaKeywords": "UI/UX design, product research, user experience, design thinking, usability testing, Nigeria",
+    "canonicalUrl": "https://programmerscity.com/service-details.php?slug=ui-ux-design",
+    "ogTitle": "UI/UX Design & Product Research | Programmers City",
+    "ogDescription": "We design intuitive, user‑focused digital experiences backed by deep product research.",
+    "ogImage": "./public/assets/images/service-design.jpg",
+    "ogUrl": "https://programmerscity.com/service-details.php?slug=ui-ux-design",
+    "twitterTitle": "UI/UX Design & Product Research | Programmers City",
+    "twitterDescription": "User‑focused design that boosts adoption and satisfaction.",
+    "twitterImage": "./public/assets/images/service-design.jpg"
+  },
+  {
+    "id": 5,
+    "slug": "enterprise-software-development",
+    "title": "Enterprise Software Development",
+    "pageTitle": "Enterprise Software Development | Programmers City",
+    "heroTitle": "Scalable, Secure Software for Enterprise‑Grade Operations",
+    "heroDescription": "We architect and build robust, high‑availability software solutions tailored to your organisation's unique processes. From multi‑tenant SaaS platforms and legacy modernisation to complex system integrations, we deliver enterprise‑grade reliability that supports growth and adapts to future demands.",
+    "ctaButtonText": "Request an Enterprise Consultation",
+    "heroImage": "./public/assets/images/service-img.png",
+    "imageAlt": "Enterprise software development illustration",
+    "overviewTitle": "Built for Scale. Engineered for Performance.",
+    "overviewDescription": "Enterprise environments demand more than just functional code—they require resilience, security, and the ability to handle peak loads without breaking. Our solutions are designed with microservices architecture, API‑first principles, and cloud‑native strategies to ensure 99.9% uptime and seamless scalability.",
+    "stat1": "15+",
+    "stat1Label": "Enterprise Clients",
+    "stat2": "99.9%",
+    "stat2Label": "Uptime Guarantee",
+    "featuresTitle": "Why Enterprises Choose Us",
+    "features": [
+      {
+        "icon": "mdi:server-plus",
+        "title": "Legacy Modernisation",
+        "description": "Upgrade outdated systems without disrupting operations."
+      },
+      {
+        "icon": "mdi:cloud-print",
+        "title": "Multi‑Tenant SaaS Architecture",
+        "description": "Serve multiple clients from a single, secure codebase."
+      },
+      {
+        "icon": "mdi:shield-lock",
+        "title": "Advanced Security & Compliance",
+        "description": "GDPR, HIPAA, SOC2 readiness, and zero‑trust principles."
+      },
+      {
+        "icon": "mdi:backup-restore",
+        "title": "High‑Availability & Disaster Recovery",
+        "description": "Redundant systems and automated failover."
+      },
+      {
+        "icon": "mdi:chart-areaspline",
+        "title": "Custom Analytics & BI",
+        "description": "Turn complex enterprise data into actionable dashboards."
+      }
+    ],
+    "processSubtext": "We follow a phased, iterative approach that aligns with your business cycles and minimises operational disruption.",
+    "ctaHeading": "Ready to Modernise Your Enterprise?",
+    "ctaDescription": "Let's architect a future‑proof solution that drives innovation and operational excellence.",
+    "ctaButton": "Talk to Our Enterprise Team",
+    "metaDescription": "Enterprise software development with scalable, secure, high‑availability solutions. We modernise legacy systems and build multi‑tenant SaaS platforms.",
+    "metaKeywords": "enterprise software, SaaS development, legacy modernisation, cloud‑native, high‑availability, Nigeria",
+    "canonicalUrl": "https://programmerscity.com/service-details.php?slug=enterprise-software-development",
+    "ogTitle": "Enterprise Software Development | Programmers City",
+    "ogDescription": "Scalable, secure enterprise software tailored to your organisation's processes.",
+    "ogImage": "./public/assets/images/service-img.png",
+    "ogUrl": "https://programmerscity.com/service-details.php?slug=enterprise-software-development",
+    "twitterTitle": "Enterprise Software Development | Programmers City",
+    "twitterDescription": "Build resilient, enterprise‑grade software that grows with you.",
+    "twitterImage": "./public/assets/images/service-img.png"
+  },
+  {
+    "id": 6,
+    "slug": "corporate-training",
+    "title": "Corporate Training",
+    "pageTitle": "Corporate Training & Tech Skills | Programmers City",
+    "heroTitle": "Acquire Modern Tech Skills for the Digital Economy",
+    "heroDescription": "Empower your workforce—and yourself—with practical, industry‑aligned training in the most in‑demand technologies. From bootcamps for individuals to custom upskilling programs for corporate teams, we deliver hands‑on learning that translates directly into job‑ready competence.",
+    "ctaButtonText": "Enroll in a Course",
+    "heroImage": "./public/assets/images/corporate_training.png",
+    "imageAlt": "Corporate tech training illustration",
+    "overviewTitle": "Build the Skills That Build Your Future",
+    "overviewDescription": "We offer comprehensive training tracks designed by industry practitioners, not just academics. Whether you're an individual looking to pivot into tech or an organisation seeking to upskill your employees, our programs combine rigorous theory with real‑world projects to ensure deep, lasting learning.",
+    "stat1": "500+",
+    "stat1Label": "Professionals Trained",
+    "stat2": "15+",
+    "stat2Label": "Corporate Partners",
+    "featuresTitle": "Our Trending Tech Tracks",
+    "features": [
+      {
+        "icon": "ph:code-fill",
+        "title": "Full‑Stack Web Development",
+        "description": "HTML, CSS, JavaScript, React, Node.js, Laravel."
+      },
+      {
+        "icon": "fluent:phone-12-filled",
+        "title": "Mobile App Development",
+        "description": "Android, iOS, React Native, Flutter."
+      },
+      {
+        "icon": "streamline:color-swatches-solid",
+        "title": "UI/UX & Product Design",
+        "description": "Figma, user research, design thinking, prototyping."
+      },
+      {
+        "icon": "mdi:chart-areaspline",
+        "title": "Data Analytics & Science",
+        "description": "Python, SQL, Power BI, Machine Learning fundamentals."
+      },
+      {
+        "icon": "mdi:security",
+        "title": "Cybersecurity & Cloud",
+        "description": "Network security, ethical hacking, AWS, Azure basics."
+      },
+      {
+        "icon": "mdi:ruler-square",
+        "title": "CAD & Architectural Design",
+        "description": "AutoCAD, 3D visualisation, building information modelling."
+      },
+      {
+        "icon": "mdi:microsoft-office",
+        "title": "Digital Skills",
+        "description": "Microsoft Office 365, project management tools, business automation."
+      }
+    ],
+    "processSubtext": "Our courses are delivered via a blend of live virtual sessions, self‑paced modules, and hands‑on projects, with ongoing mentor support.",
+    "ctaHeading": "Ready to Upskill or Transform Your Career?",
+    "ctaDescription": "Invest in your future with training that delivers real, measurable competence.",
+    "ctaButton": "View Course Catalog",
+    "metaDescription": "Upskill your workforce with practical training in software development, cybersecurity, data analytics, UI/UX, and more. Corporate and individual programs available.",
+    "metaKeywords": "tech training, corporate training, upskilling, software development courses, cybersecurity training, Nigeria",
+    "canonicalUrl": "https://programmerscity.com/service-details.php?slug=corporate-training",
+    "ogTitle": "Corporate Training & Tech Skills | Programmers City",
+    "ogDescription": "Empower your team with industry‑aligned tech training in the most in‑demand skills.",
+    "ogImage": "./public/assets/images/corporate_training.png",
+    "ogUrl": "https://programmerscity.com/service-details.php?slug=corporate-training",
+    "twitterTitle": "Corporate Training & Tech Skills | Programmers City",
+    "twitterDescription": "Practical, job‑ready tech training for individuals and teams.",
+    "twitterImage": "./public/assets/images/corporate_training.png"
+  },
+  {
+    "id": 7,
+    "slug": "architectural-3d-visualization",
+    "title": "Architectural & 3D Visualization",
+    "pageTitle": "Architectural & 3D Visualization | Programmers City",
+    "heroTitle": "Professional Architectural Drawings & 3D Visualizations",
+    "heroDescription": "Bring your building projects to life with professional architectural drawings, interior and exterior 3D renderings, construction documentation, and immersive presentation‑ready designs that help you win clients and secure approvals.",
+    "ctaButtonText": "Request a 3D Visualization",
+    "heroImage": "./public/assets/images/archi_img.png",
+    "imageAlt": "Architectural 3D visualization illustration",
+    "overviewTitle": "Visualize Before You Build",
+    "overviewDescription": "We help architects, real estate developers, construction firms, and property owners visualise projects with stunning clarity. Our visualisations bridge the gap between technical blueprints and stakeholder understanding, enabling faster decision‑making and more compelling pitches.",
+    "stat1": "200+",
+    "stat1Label": "Projects Visualized",
+    "stat2": "100%",
+    "stat2Label": "Client Approval Rate",
+    "featuresTitle": "What We Deliver",
+    "features": [
+      {
+        "icon": "mdi:floor-plan",
+        "title": "2D Architectural Drawings",
+        "description": "Floor plans, elevations, sections, and site plans."
+      },
+      {
+        "icon": "mdi:image-3d",
+        "title": "3D Exterior & Interior Renderings",
+        "description": "Photorealistic visualisations of buildings and spaces."
+      },
+      {
+        "icon": "mdi:movie-play",
+        "title": "Walkthrough Animations",
+        "description": "Immersive video tours for marketing and approvals."
+      },
+      {
+        "icon": "mdi:file-document-outline",
+        "title": "Construction Documentation",
+        "description": "Detailed plans ready for building permits and tenders."
+      },
+      {
+        "icon": "mdi:presentation",
+        "title": "Presentation‑Ready Designs",
+        "description": "Polished visuals for client meetings and investor pitches."
+      }
+    ],
+    "processSubtext": "We work closely with your design team or from your sketches to produce high‑quality deliverables on time.",
+    "ctaHeading": "Ready to Visualize Your Next Project?",
+    "ctaDescription": "Let's turn your architectural vision into stunning, reality‑based visuals.",
+    "ctaButton": "Get a Free Quote",
+    "metaDescription": "Professional architectural drawings, 3D visualizations, and walkthroughs for real estate and construction projects. Get your free quote today.",
+    "metaKeywords": "architectural visualization, 3D renderings, building design, construction documentation, real estate marketing, Nigeria",
+    "canonicalUrl": "https://programmerscity.com/service-details.php?slug=architectural-3d-visualization",
+    "ogTitle": "Architectural & 3D Visualization | Programmers City",
+    "ogDescription": "Stunning architectural drawings and 3D visualizations for your building projects.",
+    "ogImage": "./public/assets/images/archi_img.png",
+    "ogUrl": "https://programmerscity.com/service-details.php?slug=architectural-3d-visualization",
+    "twitterTitle": "Architectural & 3D Visualization | Programmers City",
+    "twitterDescription": "Bring your building designs to life with professional 3D visualizations.",
+    "twitterImage": "./public/assets/images/archi_img.png"
+  },
+  {
+    "id": 8,
+    "slug": "digital-transformation-consulting",
+    "title": "Digital Transformation & Technology Consulting",
+    "pageTitle": "Digital Transformation Consulting | Programmers City",
+    "heroTitle": "Strategic Consulting for Sustainable Digital Growth",
+    "heroDescription": "Every successful digital transformation begins with the right strategy. We work closely with organisations to evaluate existing processes, identify opportunities for improvement, and implement technology solutions that enhance productivity, strengthen security, and accelerate innovation—at every stage of your journey.",
+    "ctaButtonText": "Book a Strategy Session",
+    "heroImage": "./public/assets/images/service-consulting.png",
+    "imageAlt": "Digital transformation consulting illustration",
+    "overviewTitle": "Aligning Technology with Your Business Vision",
+    "overviewDescription": "We don't just recommend tools—we help you think differently. Our consultants partner with your leadership team to assess your digital maturity, define a clear roadmap, and guide you through the cultural and operational changes that make digital transformation successful. We help you move from outdated, manual processes to agile, data‑driven operations.",
+    "stat1": "25+",
+    "stat1Label": "Transformation Projects",
+    "stat2": "92%",
+    "stat2Label": "Faster Time‑to‑Market",
+    "featuresTitle": "What Our Consulting Covers",
+    "features": [
+      {
+        "icon": "mdi:clipboard-check",
+        "title": "Digital Maturity Assessment",
+        "description": "Understand where you stand and where you need to go."
+      },
+      {
+        "icon": "mdi:progress-wrench",
+        "title": "Process Optimisation",
+        "description": "Redesign workflows for efficiency and agility."
+      },
+      {
+        "icon": "mdi:roadmap",
+        "title": "Technology Roadmapping",
+        "description": "Clear, phased plans with measurable milestones."
+      },
+      {
+        "icon": "mdi:account-switch",
+        "title": "Change Management",
+        "description": "Training, communication, and adoption strategies for your teams."
+      },
+      {
+        "icon": "mdi:handshake",
+        "title": "Vendor & Tool Selection",
+        "description": "We help you choose the right platforms and partners."
+      }
+    ],
+    "processSubtext": "We embed ourselves in your organisation to understand your culture and constraints, ensuring the transformation sticks and delivers lasting value.",
+    "ctaHeading": "Ready to Lead in the Digital Age?",
+    "ctaDescription": "Let's build a transformation strategy that drives innovation and competitive advantage.",
+    "ctaButton": "Schedule a Free Consultation",
+    "metaDescription": "Strategic digital transformation consulting to help your organisation adopt technology, improve productivity, and accelerate innovation. Book a free consultation.",
+    "metaKeywords": "digital transformation, technology consulting, digital strategy, process optimisation, change management, Nigeria",
+    "canonicalUrl": "https://programmerscity.com/service-details.php?slug=digital-transformation-consulting",
+    "ogTitle": "Digital Transformation Consulting | Programmers City",
+    "ogDescription": "Strategic consulting to help your organisation adopt technology and drive sustainable growth.",
+    "ogImage": "./public/assets/images/service-consulting.png",
+    "ogUrl": "https://programmerscity.com/service-details.php?slug=digital-transformation-consulting",
+    "twitterTitle": "Digital Transformation Consulting | Programmers City",
+    "twitterDescription": "Partner with us to build a digital strategy that accelerates innovation.",
+    "twitterImage": "./public/assets/images/service-consulting.png"
+  }
+]
