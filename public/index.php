@@ -173,7 +173,7 @@ $dotenv->load();
         ?>
         <?php include_once './components/home/training-programs.html' ?>
         <?php include_once './components/home/our-process.html' ?>
-        <?php include_once './components/home/featured-projects.html' ?>
+        <?php include_once './components/home/featured-projects.php' ?>
     </main>
     <?php include_once './components/footer.html' ?>
     <?php include_once './components/home/chatbox.html' ?>
