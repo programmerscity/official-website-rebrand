@@ -6,7 +6,12 @@ $dotenv->load();
 if (isset($_GET['service'])) {
     $service = $_GET['service'];
     $service = str_replace('-', ' ', $service);
+    $service = "Service: $service";
     echo "<script>var service = '$service';</script>";
+}
+
+if (isset($_GET['status']) && $_GET['status'] === 'success') {
+    echo "<script>var status = 'success';</script>";
 }
 
 ?>
