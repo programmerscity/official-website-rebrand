@@ -310,7 +310,6 @@ if (!$notFound) {
 
     </main>
     <?php include_once './components/footer.html'; ?>
-    <?php include_once './components/home/chatbox.html'; ?>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>

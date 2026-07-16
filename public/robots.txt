@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /public/
+Disallow: /vendor/
+Disallow: /node_modules/
+Disallow: /storage/
+Disallow: /*.php$
+
+Sitemap: https://programmerscity.com/sitemap.xml
