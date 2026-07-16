@@ -156,8 +156,8 @@ $dotenv->load();
     <script>
         AOS.init();
 
-        // Set the anchor tag with hyper-reffernce (href) "./services" to active
-        document.querySelectorAll('a[href="./services"]').forEach(el => el.classList.add('active'));
+        // Set the anchor tag with hyper-reffernce (href) "./our-services" to active
+        document.querySelectorAll('a[href="./our-services"]').forEach(el => el.classList.add('active'));
     </script>
 </body>
 

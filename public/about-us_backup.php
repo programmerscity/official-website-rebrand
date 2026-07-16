@@ -439,7 +439,7 @@ $dotenv->load();
                     <a href="./contact-us" class="inline-block bg-primary hover:bg-primary-dark text-white font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-0.5">
                         Schedule a Free Consultation
                     </a>
-                    <a href="./services" class="inline-block bg-white hover:bg-theme-light text-secondary font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-0.5">
+                    <a href="./our-services" class="inline-block bg-white hover:bg-theme-light text-secondary font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-0.5">
                         Explore Our Services
                     </a>
                 </div>

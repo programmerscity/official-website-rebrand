@@ -196,7 +196,7 @@ if (!$notFound) {
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 bg-white px-4 py-6 md:p-12 lg:p-16 rounded-3xl shadow-xl border border-theme-light/30" data-aos="fade-up">
                         <div class="lg:w-1/2 flex flex-col gap-5">
-                            <a href="./services" class="text-primary text-sm font-bold uppercase w-fit inline-flex gap-2 items-center px-2 py-1">
+                            <a href="./our-services" class="text-primary text-sm font-bold uppercase w-fit inline-flex gap-2 items-center px-2 py-1">
                                 <iconify-icon icon="mdi:arrow-left" width="24" height="24"></iconify-icon>
                                 <span>Back to Our Service</span>
                             </a>
@@ -295,7 +295,7 @@ if (!$notFound) {
                         <a href="./contact-us?service=<?php echo urlencode($service['slug']); ?>" class="inline-block bg-primary hover:bg-primary-dark text-white font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-0.5">
                             <?php echo htmlspecialchars($service['ctaButton']); ?>
                         </a>
-                        <a href="./services" class="inline-block bg-white hover:bg-theme-light text-secondary font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-0.5">
+                        <a href="./our-services" class="inline-block bg-white hover:bg-theme-light text-secondary font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-0.5">
                             Explore All Services
                         </a>
                     </div>
@@ -313,8 +313,8 @@ if (!$notFound) {
             once: true,
             offset: 20
         });
-        // Set the anchor tag with hyper-reffernce (href) "./services" to active
-        document.querySelectorAll('a[href="./services"]').forEach(el => el.classList.add('active'));
+        // Set the anchor tag with hyper-reffernce (href) "./our-services" to active
+        document.querySelectorAll('a[href="./our-services"]').forEach(el => el.classList.add('active'));
     </script>
 </body>
 
