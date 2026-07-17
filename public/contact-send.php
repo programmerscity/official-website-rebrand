@@ -72,7 +72,7 @@ $admin_body = '
                             <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td align="center">
-                                        <img src="https://programmerscity.com/public/assets/images/favicon.png" alt="Procity Software Hub" style="display: block; max-width: 60px; height: auto; margin-bottom: 8px;" />
+                                        <img src="https://programmerscity.com/public/assets/images/procity-logo-2.png" alt="Procity Software Hub" style="display: block; max-width: 60px; height: auto; margin-bottom: 8px;" />
                                         <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.5px;">📩 New Contact Form Inquiry</h1>
                                     </td>
                                 </tr>
@@ -210,7 +210,7 @@ $client_body = '
                             <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td align="center">
-                                        <img src="https://programmerscity.com/public/assets/images/favicon.png" alt="Procity Software Hub" style="display: block; max-width: 60px; height: auto; margin-bottom: 8px;" />
+                                        <img src="https://programmerscity.com/public/assets/images/procity-logo-2.png" alt="Procity Software Hub" style="display: block; max-width: 60px; height: auto; margin-bottom: 8px;" />
                                         <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.5px;">✅ Thank You for Reaching Out!</h1>
                                     </td>
                                 </tr>
