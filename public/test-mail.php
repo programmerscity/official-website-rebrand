@@ -1,11 +1,13 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
+// test-email.php
+$to = 'info@programmerscity.com';
+$subject = 'Test Email from Procity';
+$message = 'This is a test email to verify the mail() function works.';
+$headers = 'From: test@programmerscity.com';
 
-use Dotenv\Dotenv;
-
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
-
-mail($_ENV['ADMIN_EMAIL'] ?? 'info@programmerscity.com', 'Test Email', 'This is a test message', 'From: test@programmerscity.com');
-echo 'Mail sent? Check your inbox/spam.';
-exit;
+if (mail($to, $subject, $message, $headers)) {
+    echo '✅ Email sent successfully! Check your inbox/spam.';
+} else {
+    echo '❌ Email failed. Check server logs.';
+}
+?>
