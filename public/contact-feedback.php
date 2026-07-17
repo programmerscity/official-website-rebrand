@@ -58,22 +58,24 @@ function sendEmail($to, $subject, $body, $fromEmail = null, $fromName = null)
 // Helper function to send WhatsApp notification (using Meta API)
 function sendWhatsAppMessage($messageData)
 {
-    // Skip if WhatsApp credentials are not set
-    if (empty($_ENV['WHATSAPP_PHONE_NUMBER_ID']) || empty($_ENV['WHATSAPP_ACCESS_TOKEN'])) {
+    $phone_number_id = $_ENV['WHATSAPP_PHONE_NUMBER_ID'] ?? '';
+    $access_token = $_ENV['WHATSAPP_ACCESS_TOKEN'] ?? '';
+    $recipient_number = $_ENV['WHATSAPP_RECIPIENT'] ?? '2349019606166';
+
+    if (empty($phone_number_id) || empty($access_token)) {
         error_log("WhatsApp credentials not configured");
         return false;
     }
 
-    $phone_number_id = $_ENV['WHATSAPP_PHONE_NUMBER_ID'];
-    $access_token = $_ENV['WHATSAPP_ACCESS_TOKEN'];
-    $recipient_number = $_ENV['WHATSAPP_RECIPIENT'] ?? '2349019606166';
+    $url = "https://graph.facebook.com/v18.0/{$phone_number_id}/messages";
 
-    $whatsapp_url = "https://graph.facebook.com/v18.0/{$phone_number_id}/messages";
+    // Format the phone number (remove '+' if present)
+    $recipient = ltrim($recipient_number, '+');
 
     $payload = [
         "messaging_product" => "whatsapp",
         "recipient_type" => "individual",
-        "to" => $recipient_number,
+        "to" => $recipient,
         "type" => "text",
         "text" => [
             "preview_url" => false,
@@ -81,12 +83,12 @@ function sendWhatsAppMessage($messageData)
                 "*From:* {$messageData['name']}\n" .
                 "*Email:* {$messageData['email']}\n" .
                 "*Phone:* " . ($messageData['phone'] ?? 'N/A') . "\n" .
-                "*Subject:* {$messageData['subject']}\n" .
-                "*Message:* {$messageData['message']}"
+                "*Subject:* {$messageData['subject']}\n\n" .
+                "*Message:*\n{$messageData['message']}"
         ]
     ];
 
-    $ch = curl_init($whatsapp_url);
+    $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Authorization: Bearer " . $access_token,
         "Content-Type: application/json"
@@ -94,14 +96,21 @@ function sendWhatsAppMessage($messageData)
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
     $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $err = curl_error($ch);
     curl_close($ch);
 
     if ($err) {
         error_log("WhatsApp Error: " . $err);
+        return false;
+    }
+
+    if ($httpCode !== 200 && $httpCode !== 201) {
+        error_log("WhatsApp API Error: HTTP $httpCode - $response");
         return false;
     }
 
@@ -215,5 +224,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: /");
     exit;
 }
-
-?>
