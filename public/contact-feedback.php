@@ -97,7 +97,7 @@ try {
     $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
 
     // Enable verbose debug output (set to 0 for production, 2 for testing)
-    $mail->SMTPDebug = 0; // Change to 2 to see detailed SMTP logs
+    $mail->SMTPDebug = 2; // Change to 2 to see detailed SMTP logs
 
     // SMTP Configuration (cPanel Webmail)
     $mail->isSMTP();
