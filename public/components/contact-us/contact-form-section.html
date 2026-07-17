@@ -125,6 +125,10 @@
                     body: formData // Automatically sets Content-Type to multipart/form-data
                 });
 
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
                 const data = await response.json();
 
                 // 3. Handle Response
