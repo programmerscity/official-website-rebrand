@@ -60,6 +60,11 @@ RewriteRule ^ %1 [R=301,L,NE]
 DirectoryIndex public/index.php
 
 # =============================================
+# WHATSAPP WEBHOOK - Allow direct access
+# =============================================
+RewriteRule ^whatsapp-webhook$ public/whatsapp-webhook.php [L]
+
+# =============================================
 # 9. Security: Prevent directory listing
 # =============================================
 Options -Indexes
