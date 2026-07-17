@@ -49,21 +49,20 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([^/]+)/([^/.]+)$ public/$1/$2.php [L]
 
 # =============================================
-# EXCLUDE contact-send.php FROM ALL REWRITES
-# =============================================
-RewriteRule ^contact-send\.php$ - [L]
-
-# =============================================
-# Redirect .php URLs to clean URLs (with exception)
+# 7. Redirect .php URLs to clean URLs
 # =============================================
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.php [NC]
-RewriteCond %{REQUEST_URI} !^/contact-send\.php [NC]
 RewriteRule ^ %1 [R=301,L,NE]
 
 # =============================================
 # 8. Default index page
 # =============================================
 DirectoryIndex public/index.php
+
+# =============================================
+# EXCLUDE contact-send.php FROM REWRITING
+# =============================================
+RewriteRule ^contact-send\.php$ - [L]
 
 # =============================================
 # WHATSAPP WEBHOOK - Allow direct access
