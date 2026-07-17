@@ -3,11 +3,12 @@ require __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
+echo "<script>var service = '';</script>";
 if (isset($_GET['service'])) {
     $service = $_GET['service'];
     $service = str_replace('-', ' ', $service);
     $service = "Service: $service";
-    echo "<script>var service = '$service';</script>";
+    echo "<script>service = '$service';</script>";
 }
 
 if (isset($_GET['status']) && $_GET['status'] === 'success') {
