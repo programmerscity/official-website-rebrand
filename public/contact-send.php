@@ -1,39 +1,35 @@
 <?php
-// contact-send.php - STANDALONE ENDPOINT
-// This file bypasses all .htaccess rewrite rules
+// contact-send.php - with PHPMailer
 
-// Enable error logging
+require __DIR__ . '/../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Error logging
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/logs/contact-errors.log');
 
-// Create logs directory if it doesn't exist
 if (!is_dir(__DIR__ . '/logs')) {
     mkdir(__DIR__ . '/logs', 0755, true);
 }
 
-// Helper to return JSON
-function returnJson($status, $message)
-{
+function returnJson(string $status, string $message): void {
     header('Content-Type: application/json');
     echo json_encode(['status' => $status, 'message' => $message]);
     exit;
 }
 
-// Log the request for debugging
-error_log("Contact form submitted: " . print_r($_POST, true));
-
 // =============================================
-// 1. Ensure POST request
+// 1. Validate POST
 // =============================================
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     returnJson('error', 'Invalid request method.');
 }
 
-// =============================================
-// 2. Validate input
-// =============================================
 $fullname = htmlspecialchars(trim($_POST['fullname'] ?? ''));
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
 $phone = htmlspecialchars(trim($_POST['phone'] ?? ''));
@@ -48,12 +44,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 // =============================================
-// 3. Build emails (plain text for reliability)
+// 2. Build email content
 // =============================================
-
-// Admin email
-$admin_to = 'info@programmerscity.com';
-$admin_subject = "Website Contact: " . $subject;
 $admin_body = "New Inquiry from Programmers City Website\n";
 $admin_body .= "-----------------------------------------\n";
 $admin_body .= "Full Name: $fullname\n";
@@ -62,38 +54,57 @@ $admin_body .= "Phone: " . (!empty($phone) ? $phone : 'Not Provided') . "\n";
 $admin_body .= "Subject: $subject\n\n";
 $admin_body .= "Message:\n$message\n";
 
-$admin_headers = "From: $email\r\n";
-$admin_headers .= "Reply-To: $email\r\n";
-$admin_headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
-
-// Client acknowledgment
-$client_subject = "We received your inquiry, $fullname";
 $client_body = "Hello $fullname,\n\n";
 $client_body .= "Thank you for reaching out to Programmers City Software Hub! We have successfully received your inquiry regarding: \"$subject\".\n\n";
 $client_body .= "Our team is currently reviewing your message and will get back to you within the next 24 hours via email or phone.\n\n";
-$client_body .= "For urgent inquiries, please feel free to call us directly at +234 9019 606166.\n\n";
-$client_body .= "Warm regards,\n";
-$client_body .= "The Programmers City Team\n";
+$client_body .= "For urgent inquiries, please call us directly at +234 9019 606166.\n\n";
+$client_body .= "Warm regards,\nThe Programmers City Team\n";
 $client_body .= "181 Douglas Road, By Wetheral Junction, Owerri-Aba Road, Owerri, Imo State, Nigeria.\n";
 
-$client_headers = "From: Programmers City <info@programmerscity.com>\r\n";
-$client_headers .= "Reply-To: info@programmerscity.com\r\n";
-$client_headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
+// =============================================
+// 3. Send via SMTP
+// =============================================
+try {
+    $mail = new PHPMailer(true);
+    
+    // SMTP Configuration (cPanel)
+    $mail->isSMTP();
+    $mail->Host       = 'programmerscity.com';   // or smtp.programmerscity.com
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'info@programmerscity.com';   // full email address
+    $mail->Password   = 'Procity2024*'; // your actual password
+    $mail->SMTPSecure = 'ssl';                        // ssl for port 465
+    $mail->Port       = 465;                          // or 587 with tls
+    
+    $mail->setFrom('info@programmerscity.com', 'Programmers City Software Hub');
+    $mail->addReplyTo($email, $fullname);
+    
+    // Admin
+    $mail->addAddress('info@programmerscity.com');
+    $mail->Subject = "Website Contact: " . $subject;
+    $mail->Body    = $admin_body;
+    $mail->AltBody = $admin_body;
+    $admin_sent = $mail->send();
+    
+    // Client
+    $mail->clearAddresses();
+    $mail->addAddress($email);
+    $mail->Subject = "We received your inquiry, $fullname";
+    $mail->Body    = $client_body;
+    $mail->AltBody = $client_body;
+    $client_sent = $mail->send();
+    
+    $success = $admin_sent && $client_sent;
+    
+} catch (Exception $e) {
+    error_log("PHPMailer error: " . $e->getMessage());
+    $success = false;
+}
 
 // =============================================
-// 4. Send emails
+// 4. Response
 // =============================================
-
-$admin_sent = mail($admin_to, $admin_subject, $admin_body, $admin_headers);
-$client_sent = mail($email, $client_subject, $client_body, $client_headers);
-
-error_log("Admin sent: " . ($admin_sent ? 'YES' : 'NO'));
-error_log("Client sent: " . ($client_sent ? 'YES' : 'NO'));
-
-// =============================================
-// 5. Response
-// =============================================
-if ($admin_sent && $client_sent) {
+if ($success) {
     returnJson('success', 'Your message has been sent successfully! We will get back to you shortly.');
 } else {
     returnJson('error', 'There was a problem sending your message. Please try again or call us directly at +234 9019 606166.');
