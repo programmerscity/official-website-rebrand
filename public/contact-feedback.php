@@ -17,29 +17,36 @@ function returnJson($status, $message)
 }
 
 // =============================================
-// 1. Validate Input
+// 1. Ensure this is a POST request
 // =============================================
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    returnJson('error', 'Invalid request method.');
+    returnJson('error', 'Invalid request method. Please use POST.');
 }
 
+// =============================================
+// 2. Validate Input
+// =============================================
 $fullname = htmlspecialchars(trim($_POST['fullname'] ?? ''));
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
 $phone = htmlspecialchars(trim($_POST['phone'] ?? ''));
 $subject = htmlspecialchars(trim($_POST['subject'] ?? ''));
 $message = htmlspecialchars(trim($_POST['message'] ?? ''));
 
+// Required field validation
 if (empty($fullname) || empty($email) || empty($subject) || empty($message)) {
     returnJson('error', 'Please fill in all required fields.');
 }
+
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     returnJson('error', 'Invalid email address.');
 }
 
 // =============================================
-// 2. Build Email Content
+// 3. Build Email Content
 // =============================================
 $admin_subject = "Website Contact: " . $subject;
+
+// Admin email body (HTML)
 $admin_body = "
 <html>
 <head><title>New Contact Form Inquiry</title></head>
@@ -56,6 +63,7 @@ $admin_body = "
 </html>
 ";
 
+// Client acknowledgment email body (HTML)
 $client_subject = "We received your inquiry, " . $fullname;
 $client_body = "
 <html>
@@ -75,74 +83,99 @@ $client_body = "
 ";
 
 // =============================================
-// 3. Send Emails
+// 4. Send Emails Using PHPMailer with cPanel SMTP
 // =============================================
 
-$use_smtp = filter_var($_ENV['USE_SMTP'] ?? 'true', FILTER_VALIDATE_BOOLEAN);
+$success = false;
 
-if ($use_smtp) {
-    // Try PHPMailer with SMTP
-    try {
-        require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/PHPMailer.php';
-        require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/SMTP.php';
-        require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/Exception.php';
+try {
+    // Load PHPMailer classes
+    require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/PHPMailer.php';
+    require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/SMTP.php';
+    require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/Exception.php';
 
-        $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = $_ENV['MAIL_USERNAME'] ?? '';
-        $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? '';
-        $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION'] ?? 'tls';
-        $mail->Port       = $_ENV['MAIL_PORT'] ?? 587;
-        $mail->CharSet    = 'UTF-8';
+    $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
 
-        $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'info@programmerscity.com', $_ENV['MAIL_FROM_NAME'] ?? 'Programmers City');
-        $mail->addAddress($_ENV['ADMIN_EMAIL'] ?? 'info@programmerscity.com');
-        $mail->isHTML(true);
-        $mail->Subject = $admin_subject;
-        $mail->Body    = $admin_body;
-        $mail->AltBody = strip_tags($admin_body);
+    // Enable verbose debug output (set to 0 for production, 2 for testing)
+    $mail->SMTPDebug = 0; // Change to 2 to see detailed SMTP logs
 
-        $admin_sent = $mail->send();
+    // SMTP Configuration (cPanel Webmail)
+    $mail->isSMTP();
+    $mail->Host       = $_ENV['MAIL_HOST'] ?? 'programmerscity.com';  // cPanel mail server
+    $mail->SMTPAuth   = true;
+    $mail->Username   = $_ENV['MAIL_USERNAME'] ?? 'info@programmerscity.com'; // Full email address
+    $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? ''; // Email account password
+    $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION'] ?? 'ssl'; // ssl (port 465) or tls (port 587)
+    $mail->Port       = $_ENV['MAIL_PORT'] ?? 465; // 465 for SSL, 587 for TLS
+    $mail->CharSet    = 'UTF-8';
 
-        // Send client acknowledgment
-        $mail->clearAddresses();
-        $mail->addAddress($email);
-        $mail->Subject = $client_subject;
-        $mail->Body    = $client_body;
-        $mail->AltBody = strip_tags($client_body);
+    // Sender
+    $mail->setFrom(
+        $_ENV['MAIL_FROM_ADDRESS'] ?? 'info@programmerscity.com',
+        $_ENV['MAIL_FROM_NAME'] ?? 'Programmers City Software Hub'
+    );
+    $mail->addReplyTo($email, $fullname);
 
-        $client_sent = $mail->send();
+    // Admin recipient
+    $mail->addAddress($_ENV['ADMIN_EMAIL'] ?? 'info@programmerscity.com');
 
-        $success = ($admin_sent && $client_sent);
-    } catch (\Exception $e) {
-        error_log("PHPMailer error: " . $e->getMessage());
-        // Fallback to mail() if SMTP fails
-        $success = false;
-    }
+    // Email content
+    $mail->isHTML(true);
+    $mail->Subject = $admin_subject;
+    $mail->Body    = $admin_body;
+    $mail->AltBody = strip_tags($admin_body);
+
+    $admin_sent = $mail->send();
+
+    // Send client acknowledgment
+    $mail->clearAddresses();
+    $mail->addAddress($email);
+    $mail->Subject = $client_subject;
+    $mail->Body    = $client_body;
+    $mail->AltBody = strip_tags($client_body);
+
+    $client_sent = $mail->send();
+
+    $success = ($admin_sent && $client_sent);
+} catch (\Exception $e) {
+    error_log("PHPMailer Error: " . $e->getMessage());
+    $success = false;
 }
 
-// Fallback to native mail() if SMTP is disabled or failed
+// =============================================
+// 5. Fallback to native mail() if SMTP fails
+// =============================================
 if (!$success) {
-    // Admin email
+    // Admin email using mail()
     $admin_headers = "MIME-Version: 1.0" . "\r\n";
     $admin_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
     $admin_headers .= "From: " . $email . "\r\n";
     $admin_headers .= "Reply-To: " . $email . "\r\n";
-    $admin_sent = mail($_ENV['ADMIN_EMAIL'] ?? 'info@programmerscity.com', $admin_subject, $admin_body, $admin_headers);
 
-    // Client acknowledgment
+    $admin_sent = mail(
+        $_ENV['ADMIN_EMAIL'] ?? 'info@programmerscity.com',
+        $admin_subject,
+        $admin_body,
+        $admin_headers
+    );
+
+    // Client acknowledgment using mail()
     $client_headers = "MIME-Version: 1.0" . "\r\n";
     $client_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $client_headers .= "From: Programmers City <" . ($_ENV['MAIL_FROM_ADDRESS'] ?? 'info@programmerscity.com') . ">" . "\r\n";
-    $client_sent = mail($email, $client_subject, $client_body, $client_headers);
+    $client_headers .= "From: Programmers City Software Hub <" . ($_ENV['MAIL_FROM_ADDRESS'] ?? 'info@programmerscity.com') . ">" . "\r\n";
+
+    $client_sent = mail(
+        $email,
+        $client_subject,
+        $client_body,
+        $client_headers
+    );
 
     $success = ($admin_sent && $client_sent);
 }
 
 // =============================================
-// 4. Response
+// 6. Return JSON Response (No Redirects!)
 // =============================================
 if ($success) {
     returnJson('success', 'Your message has been sent successfully! We will get back to you shortly.');
