@@ -28,7 +28,7 @@ $dotenv->load();
        <!-- Other PHP Included Page Contents -->
 
     </main>
-    <?php include_once './components/footer.html' ?>
+    <?php include_once './components/footer.php' ?>
     <?php include_once './components/home/chatbox.html' ?>
 
 

@@ -177,7 +177,7 @@ $featuredProjects = array_slice($featuredProjects, 0, 3);
         </section>
 
     </main>
-    <?php include_once './components/footer.html'; ?>
+    <?php include_once './components/footer.php'; ?>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>

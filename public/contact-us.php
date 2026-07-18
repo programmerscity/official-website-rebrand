@@ -95,8 +95,7 @@ if (isset($_GET['status']) && $_GET['status'] === 'success') {
         <?php include_once './components/contact-us/quick-info.html' ?>
         <?php include_once './components/contact-us/contact-form-section.html' ?>
     </main>
-    <?php include_once './components/footer.html' ?>
-    <?php // include_once './components/home/chatbox.html' ?>
+    <?php include_once './components/footer.php' ?>
 
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>

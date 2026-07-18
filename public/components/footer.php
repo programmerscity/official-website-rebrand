@@ -184,3 +184,4 @@
         </div>
     </section>
 </footer>
+<?php include_once 'home/chatbox.html' ?>

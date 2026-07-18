@@ -1,16 +1,17 @@
 <!-- =============================================
-     AI CHAT WIDGET - Procity Software Hub
+     AI CHAT WIDGET - Procity Software Hub (v2.2)
      =============================================
      Brand: Programmers City Software Hub (Procity)
-     Version: 2.0 - Enhanced Knowledge Base
+     Fully scoped CSS - No conflicts with header
      ============================================= -->
 
 <style>
     /* =============================================
-       CHAT WIDGET STYLES
+       ALL STYLES ARE SCOPED UNDER .procity-chat-widget
+       NO GLOBAL STYLE LEAKAGE
        ============================================= */
 
-    .chat-widget {
+    .procity-chat-widget {
         position: fixed;
         bottom: 24px;
         right: 24px;
@@ -20,10 +21,15 @@
         flex-direction: column;
         align-items: flex-end;
         gap: 12px;
+        pointer-events: none;
+    }
+
+    .procity-chat-widget * {
+        box-sizing: border-box;
     }
 
     /* ----- Chat Toggle Button ----- */
-    .chat-toggle {
+    .procity-chat-toggle {
         width: 64px;
         height: 64px;
         border-radius: 50%;
@@ -38,28 +44,29 @@
         transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         position: relative;
         flex-shrink: 0;
+        pointer-events: auto;
     }
 
-    .chat-toggle:hover {
+    .procity-chat-toggle:hover {
         transform: scale(1.08);
         box-shadow: 0 12px 40px rgba(11, 131, 222, 0.5);
     }
 
-    .chat-toggle:active {
+    .procity-chat-toggle:active {
         transform: scale(0.95);
     }
 
-    .chat-toggle .icon-chat {
+    .procity-chat-toggle .icon-chat {
         font-size: 32px;
         transition: transform 0.3s ease;
     }
 
-    .chat-toggle .icon-close {
+    .procity-chat-toggle .icon-close {
         font-size: 32px;
         transition: transform 0.3s ease;
     }
 
-    .chat-toggle .badge {
+    .procity-chat-toggle .badge {
         position: absolute;
         top: -4px;
         right: -4px;
@@ -74,10 +81,10 @@
         align-items: center;
         justify-content: center;
         border: 2px solid #ffffff;
-        animation: pulse-badge 2s infinite;
+        animation: procity-pulse-badge 2s infinite;
     }
 
-    @keyframes pulse-badge {
+    @keyframes procity-pulse-badge {
 
         0%,
         100% {
@@ -90,7 +97,7 @@
     }
 
     /* ----- Chat Window ----- */
-    .chat-window {
+    .procity-chat-window {
         width: 420px;
         max-width: calc(100vw - 48px);
         height: 600px;
@@ -108,14 +115,14 @@
         pointer-events: none;
     }
 
-    .chat-window.active {
+    .procity-chat-window.active {
         opacity: 1;
         transform: scale(1) translateY(0);
         pointer-events: auto;
     }
 
-    /* ----- Header ----- */
-    .chat-header {
+    /* ----- Chat Header ----- */
+    .procity-chat-header {
         background: linear-gradient(135deg, #0b83de 0%, #004c98 100%);
         padding: 18px 22px 16px;
         color: #ffffff;
@@ -125,7 +132,7 @@
         gap: 12px;
     }
 
-    .chat-header .avatar {
+    .procity-chat-header .avatar {
         width: 44px;
         height: 44px;
         border-radius: 50%;
@@ -139,12 +146,12 @@
         flex-shrink: 0;
     }
 
-    .chat-header .info {
+    .procity-chat-header .info {
         flex: 1;
         min-width: 0;
     }
 
-    .chat-header .info h3 {
+    .procity-chat-header .info h3 {
         font-size: 17px;
         font-weight: 700;
         margin: 0 0 2px 0;
@@ -154,7 +161,7 @@
         text-overflow: ellipsis;
     }
 
-    .chat-header .info p {
+    .procity-chat-header .info p {
         font-size: 13px;
         opacity: 0.85;
         margin: 0;
@@ -163,17 +170,17 @@
         gap: 6px;
     }
 
-    .chat-header .info .status-dot {
+    .procity-chat-header .info .status-dot {
         display: inline-block;
         width: 8px;
         height: 8px;
         border-radius: 50%;
         background: #22c55e;
-        animation: pulse-dot 1.5s infinite;
+        animation: procity-pulse-dot 1.5s infinite;
         flex-shrink: 0;
     }
 
-    @keyframes pulse-dot {
+    @keyframes procity-pulse-dot {
 
         0%,
         100% {
@@ -185,7 +192,7 @@
         }
     }
 
-    .chat-header .close-btn {
+    .procity-chat-header .close-btn {
         background: rgba(255, 255, 255, 0.15);
         border: none;
         color: #ffffff;
@@ -201,12 +208,12 @@
         font-size: 20px;
     }
 
-    .chat-header .close-btn:hover {
+    .procity-chat-header .close-btn:hover {
         background: rgba(255, 255, 255, 0.25);
     }
 
     /* ----- Messages Area ----- */
-    .chat-messages {
+    .procity-chat-messages {
         flex: 1;
         padding: 20px 20px 12px;
         overflow-y: auto;
@@ -217,35 +224,35 @@
         scroll-behavior: smooth;
     }
 
-    .chat-messages::-webkit-scrollbar {
+    .procity-chat-messages::-webkit-scrollbar {
         width: 4px;
     }
 
-    .chat-messages::-webkit-scrollbar-track {
+    .procity-chat-messages::-webkit-scrollbar-track {
         background: transparent;
     }
 
-    .chat-messages::-webkit-scrollbar-thumb {
+    .procity-chat-messages::-webkit-scrollbar-thumb {
         background: #e2e8f0;
         border-radius: 4px;
     }
 
-    .chat-messages::-webkit-scrollbar-thumb:hover {
+    .procity-chat-messages::-webkit-scrollbar-thumb:hover {
         background: #cbd5e1;
     }
 
     /* ----- Individual Messages ----- */
-    .message {
+    .procity-message {
         max-width: 88%;
         padding: 12px 16px;
         border-radius: 16px;
         font-size: 14px;
         line-height: 1.6;
-        animation: message-in 0.3s ease;
+        animation: procity-message-in 0.3s ease;
         word-wrap: break-word;
     }
 
-    @keyframes message-in {
+    @keyframes procity-message-in {
         0% {
             opacity: 0;
             transform: translateY(8px);
@@ -257,7 +264,7 @@
         }
     }
 
-    .message.bot {
+    .procity-message.bot {
         align-self: flex-start;
         background: #ffffff;
         color: #0f172a;
@@ -266,7 +273,7 @@
         border: 1px solid #e2e8f0;
     }
 
-    .message.bot .message-time {
+    .procity-message.bot .message-time {
         color: #94a3b8;
         font-size: 10px;
         margin-top: 6px;
@@ -274,7 +281,7 @@
         text-align: right;
     }
 
-    .message.user {
+    .procity-message.user {
         align-self: flex-end;
         background: #0b83de;
         color: #ffffff;
@@ -282,7 +289,7 @@
         box-shadow: 0 2px 8px rgba(11, 131, 222, 0.25);
     }
 
-    .message.user .message-time {
+    .procity-message.user .message-time {
         color: rgba(255, 255, 255, 0.7);
         font-size: 10px;
         margin-top: 6px;
@@ -290,17 +297,17 @@
         text-align: right;
     }
 
-    .message .highlight {
+    .procity-message .highlight {
         color: #0b83de;
         font-weight: 600;
     }
 
-    .message .bold {
+    .procity-message .bold {
         font-weight: 700;
     }
 
     /* ----- Typing Indicator ----- */
-    .typing-indicator {
+    .procity-typing-indicator {
         align-self: flex-start;
         background: #ffffff;
         padding: 12px 18px;
@@ -313,32 +320,32 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     }
 
-    .typing-indicator.active {
+    .procity-typing-indicator.active {
         display: flex;
     }
 
-    .typing-indicator span {
+    .procity-typing-indicator span {
         width: 8px;
         height: 8px;
         border-radius: 50%;
         background: #94a3b8;
         display: inline-block;
-        animation: typing-bounce 1.4s infinite ease-in-out;
+        animation: procity-typing-bounce 1.4s infinite ease-in-out;
     }
 
-    .typing-indicator span:nth-child(1) {
+    .procity-typing-indicator span:nth-child(1) {
         animation-delay: 0s;
     }
 
-    .typing-indicator span:nth-child(2) {
+    .procity-typing-indicator span:nth-child(2) {
         animation-delay: 0.2s;
     }
 
-    .typing-indicator span:nth-child(3) {
+    .procity-typing-indicator span:nth-child(3) {
         animation-delay: 0.4s;
     }
 
-    @keyframes typing-bounce {
+    @keyframes procity-typing-bounce {
 
         0%,
         60%,
@@ -352,7 +359,7 @@
     }
 
     /* ----- Suggested Replies ----- */
-    .suggested-replies {
+    .procity-suggested-replies {
         padding: 0 20px 12px;
         flex-shrink: 0;
         display: flex;
@@ -362,7 +369,7 @@
         border-top: 1px solid #f1f5f9;
     }
 
-    .suggested-replies button {
+    .procity-suggested-replies button {
         background: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 20px;
@@ -376,7 +383,7 @@
         white-space: nowrap;
     }
 
-    .suggested-replies button:hover {
+    .procity-suggested-replies button:hover {
         background: #0b83de;
         border-color: #0b83de;
         color: #ffffff;
@@ -384,12 +391,12 @@
         box-shadow: 0 4px 12px rgba(11, 131, 222, 0.25);
     }
 
-    .suggested-replies button:active {
+    .procity-suggested-replies button:active {
         transform: scale(0.96);
     }
 
     /* ----- Chat Input ----- */
-    .chat-input {
+    .procity-chat-input {
         padding: 12px 20px 16px;
         background: #ffffff;
         border-top: 1px solid #e2e8f0;
@@ -399,7 +406,7 @@
         align-items: center;
     }
 
-    .chat-input input {
+    .procity-chat-input input {
         flex: 1;
         padding: 12px 18px;
         border: 2px solid #e2e8f0;
@@ -413,22 +420,22 @@
         min-width: 0;
     }
 
-    .chat-input input::placeholder {
+    .procity-chat-input input::placeholder {
         color: #94a3b8;
     }
 
-    .chat-input input:focus {
+    .procity-chat-input input:focus {
         border-color: #0b83de;
         background: #ffffff;
         box-shadow: 0 0 0 4px rgba(11, 131, 222, 0.1);
     }
 
-    .chat-input input:disabled {
+    .procity-chat-input input:disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
 
-    .chat-input .send-btn {
+    .procity-chat-input .send-btn {
         width: 48px;
         height: 48px;
         border-radius: 50%;
@@ -444,140 +451,171 @@
         font-size: 20px;
     }
 
-    .chat-input .send-btn:hover:not(:disabled) {
+    .procity-chat-input .send-btn:hover:not(:disabled) {
         transform: scale(1.05);
         box-shadow: 0 4px 16px rgba(11, 131, 222, 0.35);
     }
 
-    .chat-input .send-btn:active:not(:disabled) {
+    .procity-chat-input .send-btn:active:not(:disabled) {
         transform: scale(0.93);
     }
 
-    .chat-input .send-btn:disabled {
+    .procity-chat-input .send-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
         transform: none !important;
     }
 
-    /* ----- Mobile Responsive ----- */
-    @media (max-width: 480px) {
-        .chat-widget {
-            bottom: 16px;
-            right: 16px;
-        }
-
-        .chat-toggle {
-            width: 56px;
-            height: 56px;
-        }
-
-        .chat-toggle .icon-chat,
-        .chat-toggle .icon-close {
-            font-size: 26px;
-        }
-
-        .chat-window {
-            width: calc(100vw - 32px);
-            max-height: calc(100dvh - 90px);
+    /* ----- Mobile Responsive (below 820px) ----- */
+    @media (max-width: 820px) {
+        .procity-chat-widget {
+            bottom: 0;
+            right: 0;
+            width: 100%;
             height: 100%;
-            border-radius: 20px;
+            gap: 0;
+            padding: 0;
         }
 
-        .chat-header {
+        .procity-chat-window.active~.procity-chat-toggle {
+            display: none;
+        }
+
+        .procity-chat-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 10000;
+        }
+
+        .procity-chat-window {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            height: 100% !important;
+            max-height: 100% !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            transform: none !important;
+            opacity: 1 !important;
+            pointer-events: none;
+            transition: none;
+            margin: 0 !important;
+        }
+
+        .procity-chat-window.active {
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        .procity-chat-window:not(.active) {
+            display: none;
+        }
+
+        .procity-chat-header {
             padding: 16px 18px 14px;
+            border-radius: 0;
         }
 
-        .chat-header .info h3 {
+        .procity-chat-header .info h3 {
+            font-size: 17px;
+        }
+
+        .procity-chat-messages {
+            padding: 16px 16px 10px;
+        }
+
+        .procity-message {
+            font-size: 15px;
+            padding: 12px 16px;
+            max-width: 90%;
+        }
+
+        .procity-suggested-replies {
+            padding: 0 16px 12px;
+            gap: 8px;
+        }
+
+        .procity-suggested-replies button {
+            font-size: 13px;
+            padding: 8px 16px;
+        }
+
+        .procity-chat-input {
+            padding: 10px 16px 14px;
+            gap: 10px;
+        }
+
+        .procity-chat-input input {
+            font-size: 15px;
+            padding: 12px 18px;
+        }
+
+        .procity-chat-input .send-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 22px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .procity-chat-header {
+            padding: 14px 14px 12px;
+        }
+
+        .procity-chat-header .info h3 {
             font-size: 15px;
         }
 
-        .chat-header .info p {
+        .procity-chat-header .info p {
             font-size: 12px;
         }
 
-        .chat-messages {
-            padding: 16px 16px 8px;
+        .procity-chat-messages {
+            padding: 12px 12px 8px;
         }
 
-        .message {
-            font-size: 13px;
+        .procity-message {
+            font-size: 14px;
             padding: 10px 14px;
             max-width: 92%;
         }
 
-        .suggested-replies {
-            padding: 0 16px 10px;
-            gap: 6px;
-        }
-
-        .suggested-replies button {
+        .procity-suggested-replies button {
             font-size: 12px;
-            padding: 6px 14px;
+            padding: 6px 12px;
         }
 
-        .chat-input {
-            padding: 10px 16px 14px;
-            gap: 8px;
-        }
-
-        .chat-input input {
+        .procity-chat-input input {
+            font-size: 14px;
             padding: 10px 14px;
-            font-size: 13px;
         }
 
-        .chat-input .send-btn {
+        .procity-chat-input .send-btn {
             width: 44px;
             height: 44px;
             font-size: 18px;
         }
     }
 
-    @media (max-width: 380px) {
-        .chat-window {
-            max-height: calc(100dvh - 80px);
-        }
-
-        .chat-messages {
-            padding: 12px 12px 6px;
-        }
-
-        .message {
-            font-size: 12px;
-            padding: 8px 12px;
-            max-width: 95%;
-        }
-
-        .suggested-replies button {
-            font-size: 11px;
-            padding: 5px 12px;
-        }
-
-        .chat-input input {
-            font-size: 12px;
-            padding: 8px 12px;
-        }
-
-        .chat-input .send-btn {
-            width: 40px;
-            height: 40px;
-            font-size: 16px;
-        }
-    }
-
-    .hidden {
+    .procity-chat-widget .hidden {
         display: none !important;
     }
 </style>
 
 <!-- =============================================
-     CHAT WIDGET HTML
+     CHAT WIDGET HTML - ALL CLASSES SCOPED
      ============================================= -->
 
-<div class="chat-widget" id="chatWidget">
+<div class="procity-chat-widget" id="procityChatWidget">
     <!-- Chat Window -->
-    <div class="chat-window" id="chatWindow">
+    <div class="procity-chat-window" id="procityChatWindow">
         <!-- Header -->
-        <div class="chat-header">
+        <div class="procity-chat-header">
             <div class="avatar">P</div>
             <div class="info">
                 <h3>Procity AI Assistant</h3>
@@ -586,15 +624,14 @@
                     Online · Ready to help
                 </p>
             </div>
-            <button class="close-btn" id="closeChat" aria-label="Close chat">
+            <button class="close-btn" id="procityCloseChat" aria-label="Close chat">
                 <iconify-icon icon="material-symbols:close-rounded" width="24" height="24"></iconify-icon>
             </button>
         </div>
 
         <!-- Messages -->
-        <div class="chat-messages" id="chatMessages">
-            <!-- Bot greeting -->
-            <div class="message bot" data-time="Now">
+        <div class="procity-chat-messages" id="procityChatMessages">
+            <div class="procity-message bot" data-time="Now">
                 👋 <strong>Welcome to Programmers City Software Hub!</strong><br><br>
                 I'm here to help you learn about our software development services, IT training programs, and how we can
                 work together.<br><br>
@@ -611,12 +648,12 @@
         </div>
 
         <!-- Typing Indicator -->
-        <div class="typing-indicator" id="typingIndicator">
+        <div class="procity-typing-indicator" id="procityTypingIndicator">
             <span></span><span></span><span></span>
         </div>
 
         <!-- Suggested Replies -->
-        <div class="suggested-replies" id="suggestedReplies">
+        <div class="procity-suggested-replies" id="procitySuggestedReplies">
             <button data-question="What services do you offer?">📋 Services</button>
             <button data-question="I want to build a software product">💻 Build a product</button>
             <button data-question="I want to learn tech skills">🎓 Learn skills</button>
@@ -625,16 +662,17 @@
         </div>
 
         <!-- Input -->
-        <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off" maxlength="500">
-            <button class="send-btn" id="sendBtn" aria-label="Send message">
+        <div class="procity-chat-input">
+            <input type="text" id="procityChatInput" placeholder="Type your message..." autocomplete="off"
+                maxlength="500">
+            <button class="send-btn" id="procitySendBtn" aria-label="Send message">
                 <iconify-icon icon="mynaui:send" width="24" height="24"></iconify-icon>
             </button>
         </div>
     </div>
 
     <!-- Toggle Button -->
-    <button class="chat-toggle" id="chatToggle" aria-label="Open chat">
+    <button class="procity-chat-toggle" id="procityChatToggle" aria-label="Open chat">
         <iconify-icon class="icon-chat" icon="heroicons-outline:chat" width="32" height="32"></iconify-icon>
         <iconify-icon class="icon-close hidden" icon="material-symbols:close-rounded" width="32"
             height="32"></iconify-icon>
@@ -643,7 +681,7 @@
 </div>
 
 <!-- =============================================
-     CHAT WIDGET JAVASCRIPT - Enhanced AI Engine
+     CHAT WIDGET JAVASCRIPT - IDS SCOPED
      ============================================= -->
 
 <script>
@@ -651,17 +689,17 @@
         'use strict';
 
         // =============================================
-        // DOM References
+        // DOM References (all IDs are scoped with "procity")
         // =============================================
-        const chatWidget = document.getElementById('chatWidget');
-        const chatWindow = document.getElementById('chatWindow');
-        const chatToggle = document.getElementById('chatToggle');
-        const closeChat = document.getElementById('closeChat');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const typingIndicator = document.getElementById('typingIndicator');
-        const suggestedReplies = document.getElementById('suggestedReplies');
+        const chatWidget = document.getElementById('procityChatWidget');
+        const chatWindow = document.getElementById('procityChatWindow');
+        const chatToggle = document.getElementById('procityChatToggle');
+        const closeChat = document.getElementById('procityCloseChat');
+        const chatMessages = document.getElementById('procityChatMessages');
+        const chatInput = document.getElementById('procityChatInput');
+        const sendBtn = document.getElementById('procitySendBtn');
+        const typingIndicator = document.getElementById('procityTypingIndicator');
+        const suggestedReplies = document.getElementById('procitySuggestedReplies');
         const badge = chatToggle.querySelector('.badge');
 
         // =============================================
@@ -792,85 +830,65 @@
                 response: `👥 <strong>Meet Our Team</strong>\n\n<strong>Destiny Brotobor Emuobohwoghare</strong>\n🎯 <strong>Founder & CEO</strong>\n15+ years in software engineering, systems architecture, and technology consulting. Leads the vision and strategic direction of Procity Software Hub.\n\n<strong>Mrs. Silver Iwuji Destiny</strong>\n📊 <strong>Head of Operations & HR</strong>\nExpert in product research, UI/UX design, and office management technology. Ensures seamless project management and client satisfaction.\n\n<strong>Godwin Inyene</strong>\n💻 <strong>Lead Web Development Facilitator</strong>\nProfessional full-stack developer dedicated to shaping the next generation of tech talent through our training programs.\n\n<strong>Our multidisciplinary team</strong> includes software engineers, solution architects, UI/UX designers, project managers, and technology educators — all committed to delivering innovative digital solutions.`
             },
 
-            // ----- GREETING (moved to after specific queries) -----
+            // ----- GREETING -----
             greeting: {
                 keywords: ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening',
                     'howdy', 'sup', 'yo', 'greetings', 'hola'],
                 response: `👋 Hello there! Welcome to <strong>Programmers City Software Hub</strong> — also known as <strong>Procity Software Hub</strong>.\n\nI'm here to help you learn about our software development services, IT training programs, and how we can work together.\n\n<strong>Quick links:</strong>\n• 💻 <span class="highlight">Custom software</span> development\n• 📱 <span class="highlight">Mobile app</span> development\n• 🏭 <span class="highlight">ERP</span> & business automation\n• 🎓 <span class="highlight">IT training</span> programs\n• 📂 Our <span class="highlight">portfolio</span>\n• 🤝 <span class="highlight">Partnership</span> opportunities\n\nWhat would you like to know?`
             },
 
-            // ----- FALLBACK (when no match) -----
+            // ----- FALLBACK -----
             fallback: {
-                keywords: [], // No keywords - this is the default response
+                keywords: [],
                 response: `That's a great question! 🤔\n\nI want to make sure I give you the most accurate information possible.\n\n<strong>Here are some topics I can help with:</strong>\n• 💻 <span class="highlight">Custom software</span> development\n• 📱 <span class="highlight">Mobile app</span> development\n• 🏭 <span class="highlight">ERP</span> & business automation\n• 🎓 <span class="highlight">IT training</span> programs\n• 📂 Our <span class="highlight">portfolio</span>\n• 📍 Our <span class="highlight">location</span>\n• 🤝 <span class="highlight">Partnership</span> opportunities\n• 📞 <span class="highlight">Contact</span> information\n\n📧 Or email us directly at <strong>info@programmerscity.com</strong> for more specific inquiries.`
             }
         };
 
         // =============================================
-        // AI Response Engine (Enhanced)
+        // AI Response Engine
         // =============================================
 
         function getAIResponse(message) {
             const lowerMessage = message.toLowerCase().trim();
 
-            // If empty, return fallback
             if (!lowerMessage) {
                 return knowledgeBase.fallback.response;
             }
 
-            // =============================================
-            // STEP 1: Check for explicit matches first
-            // =============================================
-
-            // First, check if the message contains multiple keywords
             let bestMatch = null;
             let bestScore = 0;
 
             for (const [key, entry] of Object.entries(knowledgeBase)) {
-                // Skip fallback for now
                 if (key === 'fallback') continue;
 
                 let score = 0;
                 const keywords = entry.keywords || [];
 
                 for (const keyword of keywords) {
-                    // Check if the keyword is in the message
                     if (lowerMessage.includes(keyword.toLowerCase())) {
-                        // Score based on length of keyword (longer = more specific)
                         score += keyword.length;
                     }
                 }
 
-                // Boost score if the message starts with a keyword
                 const firstWord = lowerMessage.split(' ')[0];
                 if (keywords.some(k => firstWord.includes(k.toLowerCase()))) {
                     score += 5;
                 }
 
-                // Boost score if the message contains multiple keywords from the same entry
                 const matchCount = keywords.filter(k => lowerMessage.includes(k.toLowerCase())).length;
                 if (matchCount >= 2) {
                     score += 10;
                 }
 
-                // Update best match
                 if (score > bestScore) {
                     bestScore = score;
                     bestMatch = entry;
                 }
             }
 
-            // =============================================
-            // STEP 2: If we found a match with high confidence
-            // =============================================
-
             if (bestScore >= 3 && bestMatch) {
                 return bestMatch.response;
             }
-
-            // =============================================
-            // STEP 3: Check for greetings (but only if no other match)
-            // =============================================
 
             const greetingKeywords = knowledgeBase.greeting.keywords || [];
             const isGreeting = greetingKeywords.some(g => lowerMessage.includes(g.toLowerCase()) || lowerMessage === g.toLowerCase());
@@ -878,10 +896,6 @@
             if (isGreeting) {
                 return knowledgeBase.greeting.response;
             }
-
-            // =============================================
-            // STEP 4: Return fallback
-            // =============================================
 
             return knowledgeBase.fallback.response;
         }
@@ -901,7 +915,7 @@
 
         function addMessage(text, sender = 'bot') {
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
+            messageDiv.className = `procity-message ${sender}`;
             const formattedText = text.replace(/\n/g, '<br>');
             messageDiv.innerHTML = formattedText + `<span class="message-time">${getTimeString()}</span>`;
             chatMessages.appendChild(messageDiv);
@@ -1001,23 +1015,17 @@
         chatInput.addEventListener('keydown', handleKeyDown);
         suggestedReplies.addEventListener('click', handleSuggestedReply);
 
-        // =============================================
         // Auto-open for new visitors
-        // =============================================
-
-        if (!document.cookie.split('; ').find(row => row.startsWith('chat_seen='))) {
+        if (!document.cookie.split('; ').find(row => row.startsWith('procity_chat_seen='))) {
             setTimeout(() => {
                 if (!isOpen) {
                     toggleChat();
-                    document.cookie = "chat_seen=true; max-age=86400; path=/";
+                    document.cookie = "procity_chat_seen=true; max-age=86400; path=/";
                 }
             }, 2500);
         }
 
-        // =============================================
         // Deep linking
-        // =============================================
-
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('chat') === 'open') {
             setTimeout(() => {
@@ -1025,9 +1033,6 @@
             }, 800);
         }
 
-        console.log('🤖 Procity AI Chat Widget v2.0 loaded');
-        console.log('📍 Brand: Programmers City Software Hub / Procity Software Hub');
-        console.log('💡 Try asking: "where is your location?" or "what services do you offer?"');
-
+        console.log('🤖 Procity AI Chat Widget v2.2 loaded (Fully scoped)');
     });
 </script>
