@@ -1,68 +1,1033 @@
-<section class="fixed bottom-3 right-7">
-    <button class=" bg-primary text-white rounded-full h-16 w-16 shadow-xl flex items-center justify-center relative">
-        <iconify-icon icon="heroicons-outline:chat" class="text-white text-[32px]"></iconify-icon>
-        <div class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"></div>
-    </button>
-    <div class="flex flex-col gap-2 items-end hidden">
-        <div class="h-151.25 max-h-[83dvh] w-112.5 rounded-[20px] border border-theme-light bg-theme-light flex flex-col justify-between overflow-hidden">
-            <aside class="px-5 py-6 bg-linear-to-r from-primary to-primary-dark text-white">
-                <div>
-                    <h1 class="font-semibold text-[24px]">Chat with us</h1>
-                    <p>we're here to help!</p>
-                </div>
-            </aside>
-            <aside class="bg-[#f4f8fb] grow">
-                <section class="flex flex-col w-112.5 h-73.5  gap-3 mt-8">
-                    <div class="flex w-94.75 h-21 px-6 gap-3">
-                        <div class="bg-primary w-10.5 h-10.5 rounded-full flex justify-center items-center">
-                            <iconify-icon class="text-white w-6 h-6" icon="solar:user-linear" width="24" height="24"></iconify-icon>
-                        </div>
-                        <div class="w-69.25 h-21 rounded-r-2xl rounded-br-2xl rounded-bl-2xl border border-theme-light p-4 gap-2.5 bg-white">
-                            <p class="w-61.25 h-13 text-[16px] text-secondary-light">
-                                Hi there! 👋 How can we help you today?
-                            </p>
-                        </div>
-                    </div>
+<!-- =============================================
+     AI CHAT WIDGET - Procity Software Hub
+     =============================================
+     Brand: Programmers City Software Hub (Procity)
+     Version: 2.0 - Enhanced Knowledge Base
+     ============================================= -->
 
-                    <div class="flex w-73.5 h-14.5 pl-19.5 gap-3">
-                        <div class="w-54 h-14.5 rounded-2xl border border-theme-light p-4 gap-2.5 bg-white flex">
-                            <p class="w-46 h-6.5 text-secondary-light">
-                                I want to build a product
-                            </p>
-                        </div>
-                    </div>
+<style>
+    /* =============================================
+       CHAT WIDGET STYLES
+       ============================================= */
 
-                    <div class="flex w-full h-14.5 pl-48 gap-3">
-                        <div class="w-54 h-14.5 rounded-2xl p-4 gap-2.5 bg-primary flex">
-                            <p class="w-46 h-6.5 text-white">
-                                I want to build a product
-                            </p>
-                        </div>
-                    </div>
+    .chat-widget {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9999;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+    }
 
+    /* ----- Chat Toggle Button ----- */
+    .chat-toggle {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0b83de 0%, #004c98 100%);
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 8px 32px rgba(11, 131, 222, 0.4);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        flex-shrink: 0;
+    }
 
-                    <div class="flex w-73.5 h-14.5 pl-19.5 gap-3">
-                        <div class="w-54 h-14.5 rounded-2xl border border-theme-light p-4 gap-2.5 bg-white flex">
-                            <p class="w-46 h-6.5 text-secondary-light">
-                                I want to learn tech skills
-                            </p>
-                        </div>
-                    </div>
-                </section>
-            </aside>
-            <aside class="bg-white px-7 py-4 flex gap-6" >
-                <div >
-                    <input type="text" required placeholder="Type your message..." class="w-73.5 text-secondary-light border-2 border-theme-light h-15 py-5 px-5 rounded-3xl focus:border-primary focus:bg-white focus:outline">
-                </div>
-                <div>
-                    <button class=" flex justify-center items-center h-15 py-5 px-8 gap-2.5 w-21 rounded-2xl bg-primary hover:bg-primary-dark transition-all duration-700">
-                       <iconify-icon  icon="mynaui:send" class=" text-white text-3xl h-7.5 w-7.5"></iconify-icon>
-                    </button>
-                </div>
-            </aside>
+    .chat-toggle:hover {
+        transform: scale(1.08);
+        box-shadow: 0 12px 40px rgba(11, 131, 222, 0.5);
+    }
+
+    .chat-toggle:active {
+        transform: scale(0.95);
+    }
+
+    .chat-toggle .icon-chat {
+        font-size: 32px;
+        transition: transform 0.3s ease;
+    }
+
+    .chat-toggle .icon-close {
+        font-size: 32px;
+        transition: transform 0.3s ease;
+    }
+
+    .chat-toggle .badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #ef4444;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #ffffff;
+        animation: pulse-badge 2s infinite;
+    }
+
+    @keyframes pulse-badge {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.15);
+        }
+    }
+
+    /* ----- Chat Window ----- */
+    .chat-window {
+        width: 420px;
+        max-width: calc(100vw - 48px);
+        height: 600px;
+        max-height: calc(100dvh - 120px);
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transform-origin: bottom right;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        opacity: 0;
+        transform: scale(0.85) translateY(20px);
+        pointer-events: none;
+    }
+
+    .chat-window.active {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        pointer-events: auto;
+    }
+
+    /* ----- Header ----- */
+    .chat-header {
+        background: linear-gradient(135deg, #0b83de 0%, #004c98 100%);
+        padding: 18px 22px 16px;
+        color: #ffffff;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .chat-header .avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 700;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        flex-shrink: 0;
+    }
+
+    .chat-header .info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .chat-header .info h3 {
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0 0 2px 0;
+        letter-spacing: -0.3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .chat-header .info p {
+        font-size: 13px;
+        opacity: 0.85;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .chat-header .info .status-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+        animation: pulse-dot 1.5s infinite;
+        flex-shrink: 0;
+    }
+
+    @keyframes pulse-dot {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.4;
+        }
+    }
+
+    .chat-header .close-btn {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: #ffffff;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease;
+        flex-shrink: 0;
+        font-size: 20px;
+    }
+
+    .chat-header .close-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* ----- Messages Area ----- */
+    .chat-messages {
+        flex: 1;
+        padding: 20px 20px 12px;
+        overflow-y: auto;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        scroll-behavior: smooth;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #cbd5e1;
+    }
+
+    /* ----- Individual Messages ----- */
+    .message {
+        max-width: 88%;
+        padding: 12px 16px;
+        border-radius: 16px;
+        font-size: 14px;
+        line-height: 1.6;
+        animation: message-in 0.3s ease;
+        word-wrap: break-word;
+    }
+
+    @keyframes message-in {
+        0% {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .message.bot {
+        align-self: flex-start;
+        background: #ffffff;
+        color: #0f172a;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+    }
+
+    .message.bot .message-time {
+        color: #94a3b8;
+        font-size: 10px;
+        margin-top: 6px;
+        display: block;
+        text-align: right;
+    }
+
+    .message.user {
+        align-self: flex-end;
+        background: #0b83de;
+        color: #ffffff;
+        border-bottom-right-radius: 4px;
+        box-shadow: 0 2px 8px rgba(11, 131, 222, 0.25);
+    }
+
+    .message.user .message-time {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 10px;
+        margin-top: 6px;
+        display: block;
+        text-align: right;
+    }
+
+    .message .highlight {
+        color: #0b83de;
+        font-weight: 600;
+    }
+
+    .message .bold {
+        font-weight: 700;
+    }
+
+    /* ----- Typing Indicator ----- */
+    .typing-indicator {
+        align-self: flex-start;
+        background: #ffffff;
+        padding: 12px 18px;
+        border-radius: 16px;
+        border-bottom-left-radius: 4px;
+        border: 1px solid #e2e8f0;
+        display: none;
+        gap: 4px;
+        align-items: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .typing-indicator.active {
+        display: flex;
+    }
+
+    .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #94a3b8;
+        display: inline-block;
+        animation: typing-bounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-indicator span:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes typing-bounce {
+
+        0%,
+        60%,
+        100% {
+            transform: translateY(0);
+        }
+
+        30% {
+            transform: translateY(-6px);
+        }
+    }
+
+    /* ----- Suggested Replies ----- */
+    .suggested-replies {
+        padding: 0 20px 12px;
+        flex-shrink: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .suggested-replies button {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #0f172a;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Inter', sans-serif;
+        white-space: nowrap;
+    }
+
+    .suggested-replies button:hover {
+        background: #0b83de;
+        border-color: #0b83de;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(11, 131, 222, 0.25);
+    }
+
+    .suggested-replies button:active {
+        transform: scale(0.96);
+    }
+
+    /* ----- Chat Input ----- */
+    .chat-input {
+        padding: 12px 20px 16px;
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+        align-items: center;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 12px 18px;
+        border: 2px solid #e2e8f0;
+        border-radius: 50px;
+        font-size: 14px;
+        font-family: 'Inter', sans-serif;
+        color: #0f172a;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+        outline: none;
+        min-width: 0;
+    }
+
+    .chat-input input::placeholder {
+        color: #94a3b8;
+    }
+
+    .chat-input input:focus {
+        border-color: #0b83de;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(11, 131, 222, 0.1);
+    }
+
+    .chat-input input:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .chat-input .send-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0b83de 0%, #004c98 100%);
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        font-size: 20px;
+    }
+
+    .chat-input .send-btn:hover:not(:disabled) {
+        transform: scale(1.05);
+        box-shadow: 0 4px 16px rgba(11, 131, 222, 0.35);
+    }
+
+    .chat-input .send-btn:active:not(:disabled) {
+        transform: scale(0.93);
+    }
+
+    .chat-input .send-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    /* ----- Mobile Responsive ----- */
+    @media (max-width: 480px) {
+        .chat-widget {
+            bottom: 16px;
+            right: 16px;
+        }
+
+        .chat-toggle {
+            width: 56px;
+            height: 56px;
+        }
+
+        .chat-toggle .icon-chat,
+        .chat-toggle .icon-close {
+            font-size: 26px;
+        }
+
+        .chat-window {
+            width: calc(100vw - 32px);
+            max-height: calc(100dvh - 90px);
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .chat-header {
+            padding: 16px 18px 14px;
+        }
+
+        .chat-header .info h3 {
+            font-size: 15px;
+        }
+
+        .chat-header .info p {
+            font-size: 12px;
+        }
+
+        .chat-messages {
+            padding: 16px 16px 8px;
+        }
+
+        .message {
+            font-size: 13px;
+            padding: 10px 14px;
+            max-width: 92%;
+        }
+
+        .suggested-replies {
+            padding: 0 16px 10px;
+            gap: 6px;
+        }
+
+        .suggested-replies button {
+            font-size: 12px;
+            padding: 6px 14px;
+        }
+
+        .chat-input {
+            padding: 10px 16px 14px;
+            gap: 8px;
+        }
+
+        .chat-input input {
+            padding: 10px 14px;
+            font-size: 13px;
+        }
+
+        .chat-input .send-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 18px;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .chat-window {
+            max-height: calc(100dvh - 80px);
+        }
+
+        .chat-messages {
+            padding: 12px 12px 6px;
+        }
+
+        .message {
+            font-size: 12px;
+            padding: 8px 12px;
+            max-width: 95%;
+        }
+
+        .suggested-replies button {
+            font-size: 11px;
+            padding: 5px 12px;
+        }
+
+        .chat-input input {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+
+        .chat-input .send-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+        }
+    }
+
+    .hidden {
+        display: none !important;
+    }
+</style>
+
+<!-- =============================================
+     CHAT WIDGET HTML
+     ============================================= -->
+
+<div class="chat-widget" id="chatWidget">
+    <!-- Chat Window -->
+    <div class="chat-window" id="chatWindow">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="avatar">P</div>
+            <div class="info">
+                <h3>Procity AI Assistant</h3>
+                <p>
+                    <span class="status-dot"></span>
+                    Online · Ready to help
+                </p>
+            </div>
+            <button class="close-btn" id="closeChat" aria-label="Close chat">
+                <iconify-icon icon="material-symbols:close-rounded" width="24" height="24"></iconify-icon>
+            </button>
         </div>
-        <button class="bg-primary hover:bg-primary-dark hover:scale-108 transition-all duration-700 text-white rounded-full h-16 w-16 shadow-xl flex items-center justify-center">
-            <iconify-icon icon="material-symbols:close-rounded" class="text-white text-[32px]"></iconify-icon>
-        </button>
+
+        <!-- Messages -->
+        <div class="chat-messages" id="chatMessages">
+            <!-- Bot greeting -->
+            <div class="message bot" data-time="Now">
+                👋 <strong>Welcome to Programmers City Software Hub!</strong><br><br>
+                I'm here to help you learn about our software development services, IT training programs, and how we can
+                work together.<br><br>
+                <strong>Quick links:</strong><br>
+                • 💻 <span class="highlight">Custom software</span> development<br>
+                • 📱 <span class="highlight">Mobile app</span> development<br>
+                • 🏭 <span class="highlight">ERP</span> & business automation<br>
+                • 🎓 <span class="highlight">IT training</span> programs<br>
+                • 📂 Our <span class="highlight">portfolio</span><br>
+                • 🤝 <span class="highlight">Partnership</span> opportunities<br><br>
+                What would you like to know?
+                <span class="message-time">Now</span>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span><span></span><span></span>
+        </div>
+
+        <!-- Suggested Replies -->
+        <div class="suggested-replies" id="suggestedReplies">
+            <button data-question="What services do you offer?">📋 Services</button>
+            <button data-question="I want to build a software product">💻 Build a product</button>
+            <button data-question="I want to learn tech skills">🎓 Learn skills</button>
+            <button data-question="Where is your location?">📍 Location</button>
+            <button data-question="Tell me about your company">🏢 About us</button>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off" maxlength="500">
+            <button class="send-btn" id="sendBtn" aria-label="Send message">
+                <iconify-icon icon="mynaui:send" width="24" height="24"></iconify-icon>
+            </button>
+        </div>
     </div>
-</section>
+
+    <!-- Toggle Button -->
+    <button class="chat-toggle" id="chatToggle" aria-label="Open chat">
+        <iconify-icon class="icon-chat" icon="heroicons-outline:chat" width="32" height="32"></iconify-icon>
+        <iconify-icon class="icon-close hidden" icon="material-symbols:close-rounded" width="32"
+            height="32"></iconify-icon>
+        <span class="badge">1</span>
+    </button>
+</div>
+
+<!-- =============================================
+     CHAT WIDGET JAVASCRIPT - Enhanced AI Engine
+     ============================================= -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        'use strict';
+
+        // =============================================
+        // DOM References
+        // =============================================
+        const chatWidget = document.getElementById('chatWidget');
+        const chatWindow = document.getElementById('chatWindow');
+        const chatToggle = document.getElementById('chatToggle');
+        const closeChat = document.getElementById('closeChat');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const suggestedReplies = document.getElementById('suggestedReplies');
+        const badge = chatToggle.querySelector('.badge');
+
+        // =============================================
+        // State
+        // =============================================
+        let isOpen = false;
+        let isProcessing = false;
+        let conversationHistory = [];
+
+        // =============================================
+        // EXPANDED KNOWLEDGE BASE
+        // =============================================
+
+        const knowledgeBase = {
+
+            // ----- COMPANY INFO -----
+            company: {
+                keywords: ['company', 'about', 'who are you', 'what is procity', 'programmers city',
+                    'tell me about yourself', 'what do you do', 'introduction', 'background', 'history',
+                    'founded', 'established', 'Procity Software Hub'],
+                response: `🏢 <strong>About Programmers City Software Hub</strong>\n\n<strong>Programmers City Software Hub</strong> — officially registered as <strong>Procity Software Hub</strong> — is Nigeria's premier software engineering and IT training company.\n\n📌 <strong>Founded:</strong> 2010\n📍 <strong>Headquarters:</strong> Owerri, Imo State, Nigeria\n🌍 <strong>Reach:</strong> Nigeria, UK, USA, South Africa, and beyond\n\n<strong>What We Do:</strong>\nWe're a <strong>dual-purpose</strong> technology leader:\n1️⃣ <strong>Software Development Hub</strong> — Building enterprise-grade solutions\n2️⃣ <strong>IT Training Institution</strong> — Empowering the next generation of tech talent\n\n<strong>Our Vision:</strong> To be Africa's most trusted technology partner — recognized globally for engineering excellence, innovation, and transformative power.\n\n<strong>Our Mission:</strong> To democratize technology excellence across Africa by delivering world-class software solutions and training that empower organizations and professionals to excel.`
+            },
+
+            // ----- SERVICES (Detailed) -----
+            services: {
+                keywords: ['services', 'offer', 'what do you do', 'solutions', 'what can you build',
+                    'capabilities', 'expertise', 'specialize', 'service', 'offering'],
+                response: `📋 <strong>Our 8 Core Services</strong>\n\n<strong>1️⃣ Custom Software Development</strong>\nTailor-made business software, enterprise systems, and web applications that streamline operations, improve efficiency, and support long-term growth.\n\n<strong>2️⃣ Mobile App Development</strong>\nIntuitive Android and iOS applications that keep customers connected and businesses accessible from anywhere.\n\n<strong>3️⃣ ERP & Business Automation</strong>\nIntegrated ERP solutions that connect departments, automate workflows, and provide real-time business insights.\n\n<strong>4️⃣ UI/UX Design</strong>\nUser-focused interface and experience design that improves usability, adoption, and customer satisfaction.\n\n<strong>5️⃣ Enterprise Software Development</strong>\nScalable, secure software solutions for enterprise-grade operations with 99.9% uptime and advanced security.\n\n<strong>6️⃣ Corporate Training & Tech Skills</strong>\nPractical, industry-aligned training in the most in-demand technologies — from Full-Stack Web Dev to Cybersecurity.\n\n<strong>7️⃣ Architectural & 3D Visualization</strong>\nProfessional architectural drawings, 3D renderings, walkthroughs, and construction documentation.\n\n<strong>8️⃣ Digital Transformation & Technology Consulting</strong>\nStrategic consulting to evaluate processes, identify improvements, and implement technology solutions that accelerate innovation.\n\n💡 <span class="highlight">Which service interests you the most? I can tell you more!</span>`
+            },
+
+            // ----- CUSTOM SOFTWARE -----
+            customSoftware: {
+                keywords: ['custom software', 'software development', 'web application', 'web app',
+                    'portal', 'business software', 'enterprise system', 'custom application'],
+                response: `💻 <strong>Custom Software Development</strong>\n\nWe build tailor-made business software, enterprise systems, portals, and web applications that streamline operations, improve efficiency, and support long-term growth.\n\n<strong>What We Deliver:</strong>\n• <strong>Workflow Automation</strong> — Eliminate repetitive manual tasks\n• <strong>Seamless Integrations</strong> — Connect with existing CRM, ERP, and tools\n• <strong>Real-time Reporting</strong> — Actionable business intelligence dashboards\n• <strong>Scalable Architecture</strong> — Built to grow from startup to enterprise\n• <strong>Enhanced Security</strong> — Role-based access, encryption, compliance\n\n<strong>Tech Stack:</strong> Laravel, React, Node.js, Vue.js, MySQL, PostgreSQL, Tailwind CSS, and more.\n\n📞 <span class="highlight">Want a custom quote? Schedule a free consultation!</span>`
+            },
+
+            // ----- MOBILE APPS -----
+            mobileApps: {
+                keywords: ['mobile app', 'android', 'ios', 'iphone', 'play store', 'app store',
+                    'mobile application', 'cross-platform', 'react native', 'flutter'],
+                response: `📱 <strong>Mobile App Development</strong>\n\nWe build intuitive, high-performance Android and iOS applications that keep customers connected and businesses accessible from anywhere.\n\n<strong>What Makes Our Apps Stand Out:</strong>\n• <strong>User-Centric Design</strong> — Intuitive interfaces that users love\n• <strong>Offline Capabilities</strong> — Functionality without internet\n• <strong>Push Notifications</strong> — Re-engage users with timely alerts\n• <strong>Secure Payments</strong> — Integrated with leading payment gateways\n• <strong>Analytics</strong> — Understand user behaviour to optimise engagement\n\n<strong>Our Approach:</strong> We use <strong>React Native</strong> and <strong>Flutter</strong> for cross-platform development, ensuring consistent experiences across both iOS and Android.\n\n📞 <span class="highlight">Ready to go mobile? Let's discuss your app idea!</span>`
+            },
+
+            // ----- ERP & AUTOMATION -----
+            erpAutomation: {
+                keywords: ['erp', 'enterprise resource planning', 'automation', 'business automation',
+                    'workflow', 'inventory', 'production', 'manufacturing', 'supply chain', 'hr', 'payroll',
+                    'finance', 'accounting', 'crm', 'sales'],
+                response: `🏭 <strong>ERP & Business Process Automation</strong>\n\nWe replace disconnected spreadsheets and manual processes with integrated ERP solutions that connect departments, automate workflows, and provide real-time business insights.\n\n<strong>What We Deliver:</strong>\n• <strong>Finance & Accounting</strong> — Automated invoicing, expense tracking, reporting\n• <strong>Inventory & Supply Chain</strong> — Real-time stock management, procurement\n• <strong>HR & Payroll</strong> — Employee data, attendance, payroll in one system\n• <strong>CRM & Sales</strong> — Lead tracking, pipeline management, faster closing\n• <strong>Custom Dashboards</strong> — Role-based views for every department\n\n<strong>Case Study:</strong> We built a comprehensive ERP system for <strong>Panpet Global Enterprise</strong> (food production), managing staff, inventory, production, sales, and finances.\n\n📞 <span class="highlight">Ready to automate your business? Let's talk!</span>`
+            },
+
+            // ----- UI/UX DESIGN -----
+            uiux: {
+                keywords: ['ui', 'ux', 'design', 'user experience', 'user interface', 'product design',
+                    'prototype', 'wireframe', 'design system', 'usability', 'research'],
+                response: `🎨 <strong>UI/UX Design</strong>\n\nWe create engaging digital experiences through user-focused interface and experience design that improves usability, adoption, and customer satisfaction.\n\n<strong>Our Design Process:</strong>\n1️⃣ <strong>Product Discovery & Research</strong> — User interviews, competitor analysis, journey mapping\n2️⃣ <strong>Acceptance Criteria Definition</strong> — Clear, testable criteria for design and development\n3️⃣ <strong>Wireframing & Prototyping</strong> — From low-fidelity sketches to interactive prototypes\n4️⃣ <strong>UI Design & Design Systems</strong> — Reusable components for brand consistency\n5️⃣ <strong>Usability Testing</strong> — Validate designs with real users before development\n\n<strong>Tools:</strong> Figma, Adobe XD, Sketch, InVision, and more.\n\n📞 <span class="highlight">Want a design that users will love? Let's collaborate!</span>`
+            },
+
+            // ----- ENTERPRISE SOFTWARE -----
+            enterprise: {
+                keywords: ['enterprise', 'saas', 'multi-tenant', 'legacy', 'modernization', 'modernisation',
+                    'high-availability', 'disaster recovery', 'compliance', 'gdpr', 'hipaa', 'soc2'],
+                response: `🏢 <strong>Enterprise Software Development</strong>\n\nWe architect and build robust, high-availability software solutions tailored to enterprise processes — with 99.9% uptime and enterprise-grade security.\n\n<strong>Why Enterprises Choose Us:</strong>\n• <strong>Legacy Modernisation</strong> — Upgrade outdated systems without disruption\n• <strong>Multi-Tenant SaaS Architecture</strong> — Serve multiple clients from one secure codebase\n• <strong>Advanced Security & Compliance</strong> — GDPR, HIPAA, SOC2 readiness\n• <strong>High-Availability & Disaster Recovery</strong> — Redundant systems, automated failover\n• <strong>Custom Analytics & BI</strong> — Turn complex data into actionable dashboards\n\n<strong>Client Experience:</strong> We've delivered enterprise solutions for Panpet Global Enterprise, RBH Hospitality Management (UK), and government agencies.\n\n📞 <span class="highlight">Ready to modernise your enterprise? Let's talk!</span>`
+            },
+
+            // ----- TRAINING -----
+            training: {
+                keywords: ['training', 'learn', 'course', 'teach', 'study', 'skills', 'education',
+                    'upskill', 'bootcamp', 'class', 'curriculum', 'certification', 'developer course',
+                    'programming course'],
+                response: `🎓 <strong>Corporate Training & Tech Skill Acquisition</strong>\n\nWe empower individuals and workforces with practical, industry-aligned training in the most in-demand technologies.\n\n<strong>Our Trending Tech Tracks:</strong>\n\n📚 <strong>Full-Stack Web Development</strong>\nHTML, CSS, JavaScript, React, Node.js, Laravel\n\n📱 <strong>Mobile App Development</strong>\nAndroid, iOS, React Native, Flutter\n\n🎨 <strong>UI/UX & Product Design</strong>\nFigma, user research, design thinking, prototyping\n\n📊 <strong>Data Analytics & Science</strong>\nPython, SQL, Power BI, Machine Learning fundamentals\n\n🔒 <strong>Cybersecurity & Cloud</strong>\nNetwork security, ethical hacking, AWS, Azure basics\n\n🏗️ <strong>CAD & Architectural Design</strong>\nAutoCAD, 3D visualisation, building information modelling\n\n💼 <strong>Digital Skills</strong>\nMicrosoft 365, project management, business automation\n\n<strong>Delivery:</strong> Live virtual sessions, self-paced modules, hands-on projects, and mentor support.\n\n📞 <span class="highlight">Ready to upskill your team or start your tech career? Let's talk!</span>`
+            },
+
+            // ----- ARCHITECTURAL -----
+            architectural: {
+                keywords: ['architectural', '3d', 'visualization', 'renderings', 'drawing', 'cad',
+                    'autocad', 'walkthrough', 'construction', 'blueprint', 'floor plan', 'elevation'],
+                response: `🏗️ <strong>Architectural & 3D Visualization</strong>\n\nWe provide professional architectural drawings, 3D visualizations, interior and exterior renderings, construction documentation, and presentation-ready designs.\n\n<strong>What We Deliver:</strong>\n• <strong>2D Architectural Drawings</strong> — Floor plans, elevations, sections, site plans\n• <strong>3D Exterior & Interior Renderings</strong> — Photorealistic visualisations of buildings\n• <strong>Walkthrough Animations</strong> — Immersive video tours for marketing\n• <strong>Construction Documentation</strong> — Detailed plans for permits and tenders\n• <strong>Presentation-Ready Designs</strong> — Polished visuals for client meetings\n\n<strong>Who We Serve:</strong> Architects, real estate developers, construction firms, and property owners.\n\n📞 <span class="highlight">Ready to visualize your project? Let's bring it to life!</span>`
+            },
+
+            // ----- CONSULTING -----
+            consulting: {
+                keywords: ['consulting', 'digital transformation', 'strategy', 'roadmap', 'advisory',
+                    'assessment', 'maturity', 'optimization', 'vendor selection', 'change management'],
+                response: `🤝 <strong>Digital Transformation & Technology Consulting</strong>\n\nWe provide strategic consulting to evaluate processes, identify opportunities, and implement technology solutions that enhance productivity, strengthen security, and accelerate innovation.\n\n<strong>Our Consulting Covers:</strong>\n• <strong>Digital Maturity Assessment</strong> — Understand where you stand and where to go\n• <strong>Process Optimisation</strong> — Redesign workflows for efficiency and agility\n• <strong>Technology Roadmapping</strong> — Clear, phased plans with measurable milestones\n• <strong>Change Management</strong> — Training, communication, adoption strategies\n• <strong>Vendor & Tool Selection</strong> — We help you choose the right platforms and partners\n\n<strong>Client Experience:</strong> We've led digital transformation projects for government agencies and enterprises across Africa.\n\n📞 <span class="highlight">Ready to transform your organisation? Let's start with a strategy session!</span>`
+            },
+
+            // ----- PORTFOLIO -----
+            portfolio: {
+                keywords: ['portfolio', 'projects', 'work', 'case study', 'examples', 'clients',
+                    'showcase', 'previous work', 'featured project'],
+                response: `📂 <strong>Our Featured Projects</strong>\n\n<strong>🏭 Panpet Global Enterprise ERP System</strong>\nComprehensive ERP solution for a leading food production company in Nigeria. Features include staff management, inventory, production, sales, and financial tracking.\n\n<strong>👗 Vogue N' Stylish Mobile Apps</strong>\nTwo distinct fashion applications: one for designers (management) and one for consumers (marketplace). Built with React Native and Expo SDK.\n\n<strong>🚗 Bondlogistics Car Rentals & Sales</strong>\nMini e-commerce platform for car sales and rental services, serving clients in Atlanta, Georgia, USA.\n\n<strong>🌾 Digisol Marketplace</strong>\nGovernment initiative to strengthen Nigeria's agricultural value chain. We served as the primary IT consultants and technical architects.\n\n<strong>🏢 Osesua Investment Website</strong>\nProfessional corporate website for an oil & gas and general contracting company.\n\n<strong>🏨 RBH Hospitality Management</strong>\nCorporate platform for one of the UK's leading hotel management companies (200+ hotels).\n\n<strong>📦 Nine Yards Logistics</strong>\nEuropean 3PL partner website with comprehensive service presentation and lead generation.\n\n🔗 <span class="highlight">Visit our portfolio page for more details: <a href="/portfolio" style="color:#0b83de;">/portfolio</a></span>`
+            },
+
+            // ----- LOCATION -----
+            location: {
+                keywords: ['location', 'address', 'where', 'office', 'owen', 'imo', 'nigeria',
+                    'headquarters', 'find us', 'come', 'visit', 'map', 'directions'],
+                response: `📍 <strong>Our Location</strong>\n\n<strong>Headquarters:</strong>\n🏢 <strong>Programmers City Software Hub</strong>\n181 Douglas Road, By Wetheral Junction\nOwerri-Aba Road, Owerri\nImo State, Nigeria\n\n📞 <strong>Phone:</strong> +234 9019 606166\n📧 <strong>Email:</strong> info@programmerscity.com\n\n<strong>Office Hours:</strong>\nMonday–Friday: 9:00 AM – 5:30 PM (WAT)\n🕐 <strong>Inquiries handled 24/7</strong>\n\n<strong>Global Reach:</strong>\nWhile our headquarters is in Owerri, Nigeria, we serve clients across the United Kingdom, United States, South Africa, and beyond.\n\n🌐 <a href="https://maps.google.com/?q=181+Douglas+Road+Wetheral+Junction+Owerri+Imo+State+Nigeria" target="_blank" style="color:#0b83de;">Get directions on Google Maps →</a>`
+            },
+
+            // ----- CONTACT -----
+            contact: {
+                keywords: ['contact', 'phone', 'email', 'call', 'reach', 'whatsapp', 'number',
+                    'telephone', 'mobile', 'message', 'connect', 'get in touch'],
+                response: `📞 <strong>Contact Us</strong>\n\n<strong>Phone:</strong> +234 9019 606166\n<strong>WhatsApp:</strong> +234 9019 606166\n<strong>Email:</strong> info@programmerscity.com\n\n<strong>Office Hours:</strong>\nMonday–Friday: 9:00 AM – 5:30 PM (WAT)\n🕐 Inquiries handled 24/7\n\n<strong>Visit Us:</strong>\n181 Douglas Road, By Wetheral Junction\nOwerri-Aba Road, Owerri\nImo State, Nigeria\n\n🌐 <strong>Website:</strong> programmerscity.com\n\n🔗 <a href="https://wa.me/2349019606166" target="_blank" style="color:#0b83de;">Chat with us on WhatsApp →</a>\n📧 <a href="mailto:info@programmerscity.com" style="color:#0b83de;">Send us an email →</a>`
+            },
+
+            // ----- PRICING -----
+            pricing: {
+                keywords: ['price', 'cost', 'quote', 'estimate', 'how much', 'budget', 'fee',
+                    'pricing', 'rates', 'charges', 'payment', 'invoice'],
+                response: `💰 <strong>Pricing & Quotes</strong>\n\nProject costs vary based on scope, complexity, and specific requirements. We provide <strong>free consultations</strong> and detailed, transparent proposals with no hidden fees.\n\n<strong>What affects project cost?</strong>\n• Project scope and complexity\n• Required features and functionality\n• Timeline and urgency\n• Technology stack selection\n• Post-launch support needs\n\n<strong>Next Steps:</strong>\n1️⃣ <strong>Schedule a free consultation</strong> — Discuss your project\n2️⃣ <strong>Receive a detailed proposal</strong> — Transparent scope and pricing\n3️⃣ <strong>Get started</strong> — Let's build something amazing!\n\n📞 <span class="highlight">Ready for a custom quote? Contact us today!</span>`
+            },
+
+            // ----- PARTNERSHIP -----
+            partnership: {
+                keywords: ['partner', 'partnership', 'collaborate', 'work together', 'engage',
+                    'contract', 'joint', 'strategic', 'alliance', 'partner with'],
+                response: `🤝 <strong>Partnership Opportunities</strong>\n\nWe're always open to strategic partnerships! We work with organizations of all sizes on:\n\n<strong>🤝 Custom Software Development</strong>\nPartner with us to build enterprise-grade solutions for your clients or internal operations.\n\n<strong>📚 Corporate Training Programs</strong>\nUpskill your workforce with our practical, industry-aligned training programs.\n\n<strong>🏢 Digital Transformation Consulting</strong>\nCollaborate with our experts to guide organizations through their digital journey.\n\n<strong>🔗 Technology Partnerships</strong>\nJoint ventures, co-development, and strategic alliances.\n\n<strong>🏦 Government & Enterprise</strong>\nWe have experience delivering for government agencies and large enterprises.\n\n📞 <span class="highlight">Ready to partner? Let's schedule a strategic discussion!</span>`
+            },
+
+            // ----- TEAM -----
+            team: {
+                keywords: ['team', 'staff', 'employees', 'people', 'who works there', 'engineers',
+                    'developers', 'designers', 'leadership', 'founder', 'ceo'],
+                response: `👥 <strong>Meet Our Team</strong>\n\n<strong>Destiny Brotobor Emuobohwoghare</strong>\n🎯 <strong>Founder & CEO</strong>\n15+ years in software engineering, systems architecture, and technology consulting. Leads the vision and strategic direction of Procity Software Hub.\n\n<strong>Mrs. Silver Iwuji Destiny</strong>\n📊 <strong>Head of Operations & HR</strong>\nExpert in product research, UI/UX design, and office management technology. Ensures seamless project management and client satisfaction.\n\n<strong>Godwin Inyene</strong>\n💻 <strong>Lead Web Development Facilitator</strong>\nProfessional full-stack developer dedicated to shaping the next generation of tech talent through our training programs.\n\n<strong>Our multidisciplinary team</strong> includes software engineers, solution architects, UI/UX designers, project managers, and technology educators — all committed to delivering innovative digital solutions.`
+            },
+
+            // ----- GREETING (moved to after specific queries) -----
+            greeting: {
+                keywords: ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening',
+                    'howdy', 'sup', 'yo', 'greetings', 'hola'],
+                response: `👋 Hello there! Welcome to <strong>Programmers City Software Hub</strong> — also known as <strong>Procity Software Hub</strong>.\n\nI'm here to help you learn about our software development services, IT training programs, and how we can work together.\n\n<strong>Quick links:</strong>\n• 💻 <span class="highlight">Custom software</span> development\n• 📱 <span class="highlight">Mobile app</span> development\n• 🏭 <span class="highlight">ERP</span> & business automation\n• 🎓 <span class="highlight">IT training</span> programs\n• 📂 Our <span class="highlight">portfolio</span>\n• 🤝 <span class="highlight">Partnership</span> opportunities\n\nWhat would you like to know?`
+            },
+
+            // ----- FALLBACK (when no match) -----
+            fallback: {
+                keywords: [], // No keywords - this is the default response
+                response: `That's a great question! 🤔\n\nI want to make sure I give you the most accurate information possible.\n\n<strong>Here are some topics I can help with:</strong>\n• 💻 <span class="highlight">Custom software</span> development\n• 📱 <span class="highlight">Mobile app</span> development\n• 🏭 <span class="highlight">ERP</span> & business automation\n• 🎓 <span class="highlight">IT training</span> programs\n• 📂 Our <span class="highlight">portfolio</span>\n• 📍 Our <span class="highlight">location</span>\n• 🤝 <span class="highlight">Partnership</span> opportunities\n• 📞 <span class="highlight">Contact</span> information\n\n📧 Or email us directly at <strong>info@programmerscity.com</strong> for more specific inquiries.`
+            }
+        };
+
+        // =============================================
+        // AI Response Engine (Enhanced)
+        // =============================================
+
+        function getAIResponse(message) {
+            const lowerMessage = message.toLowerCase().trim();
+
+            // If empty, return fallback
+            if (!lowerMessage) {
+                return knowledgeBase.fallback.response;
+            }
+
+            // =============================================
+            // STEP 1: Check for explicit matches first
+            // =============================================
+
+            // First, check if the message contains multiple keywords
+            let bestMatch = null;
+            let bestScore = 0;
+
+            for (const [key, entry] of Object.entries(knowledgeBase)) {
+                // Skip fallback for now
+                if (key === 'fallback') continue;
+
+                let score = 0;
+                const keywords = entry.keywords || [];
+
+                for (const keyword of keywords) {
+                    // Check if the keyword is in the message
+                    if (lowerMessage.includes(keyword.toLowerCase())) {
+                        // Score based on length of keyword (longer = more specific)
+                        score += keyword.length;
+                    }
+                }
+
+                // Boost score if the message starts with a keyword
+                const firstWord = lowerMessage.split(' ')[0];
+                if (keywords.some(k => firstWord.includes(k.toLowerCase()))) {
+                    score += 5;
+                }
+
+                // Boost score if the message contains multiple keywords from the same entry
+                const matchCount = keywords.filter(k => lowerMessage.includes(k.toLowerCase())).length;
+                if (matchCount >= 2) {
+                    score += 10;
+                }
+
+                // Update best match
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = entry;
+                }
+            }
+
+            // =============================================
+            // STEP 2: If we found a match with high confidence
+            // =============================================
+
+            if (bestScore >= 3 && bestMatch) {
+                return bestMatch.response;
+            }
+
+            // =============================================
+            // STEP 3: Check for greetings (but only if no other match)
+            // =============================================
+
+            const greetingKeywords = knowledgeBase.greeting.keywords || [];
+            const isGreeting = greetingKeywords.some(g => lowerMessage.includes(g.toLowerCase()) || lowerMessage === g.toLowerCase());
+
+            if (isGreeting) {
+                return knowledgeBase.greeting.response;
+            }
+
+            // =============================================
+            // STEP 4: Return fallback
+            // =============================================
+
+            return knowledgeBase.fallback.response;
+        }
+
+        // =============================================
+        // Message Management
+        // =============================================
+
+        function getTimeString() {
+            const now = new Date();
+            return now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addMessage(text, sender = 'bot') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            const formattedText = text.replace(/\n/g, '<br>');
+            messageDiv.innerHTML = formattedText + `<span class="message-time">${getTimeString()}</span>`;
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+            conversationHistory.push({ role: sender, content: text });
+            return messageDiv;
+        }
+
+        function showTyping() {
+            typingIndicator.classList.add('active');
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            typingIndicator.classList.remove('active');
+        }
+
+        function processUserMessage(userMessage) {
+            if (isProcessing) return;
+            isProcessing = true;
+
+            chatInput.disabled = true;
+            sendBtn.disabled = true;
+
+            addMessage(userMessage, 'user');
+            showTyping();
+
+            const delay = 300 + Math.random() * 500;
+
+            setTimeout(() => {
+                const response = getAIResponse(userMessage);
+                hideTyping();
+                addMessage(response, 'bot');
+
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                chatInput.focus();
+
+                isProcessing = false;
+            }, delay);
+        }
+
+        // =============================================
+        // Event Handlers
+        // =============================================
+
+        function toggleChat() {
+            isOpen = !isOpen;
+
+            if (isOpen) {
+                chatWindow.classList.add('active');
+                chatToggle.querySelector('.icon-chat').classList.add('hidden');
+                chatToggle.querySelector('.icon-close').classList.remove('hidden');
+                badge.classList.add('hidden');
+                setTimeout(() => chatInput.focus(), 350);
+            } else {
+                chatWindow.classList.remove('active');
+                chatToggle.querySelector('.icon-chat').classList.remove('hidden');
+                chatToggle.querySelector('.icon-close').classList.add('hidden');
+                badge.classList.remove('hidden');
+            }
+        }
+
+        function handleSendMessage() {
+            const message = chatInput.value.trim();
+            if (message === '' || isProcessing) return;
+            chatInput.value = '';
+            processUserMessage(message);
+        }
+
+        function handleSuggestedReply(event) {
+            const button = event.target.closest('button');
+            if (!button) return;
+            const question = button.dataset.question;
+            if (!question) return;
+            chatInput.value = question;
+            handleSendMessage();
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                handleSendMessage();
+            }
+            if (event.key === 'Escape' && isOpen) {
+                toggleChat();
+            }
+        }
+
+        // =============================================
+        // Initialize
+        // =============================================
+
+        chatToggle.addEventListener('click', toggleChat);
+        closeChat.addEventListener('click', toggleChat);
+        sendBtn.addEventListener('click', handleSendMessage);
+        chatInput.addEventListener('keydown', handleKeyDown);
+        suggestedReplies.addEventListener('click', handleSuggestedReply);
+
+        // =============================================
+        // Auto-open for new visitors
+        // =============================================
+
+        if (!document.cookie.split('; ').find(row => row.startsWith('chat_seen='))) {
+            setTimeout(() => {
+                if (!isOpen) {
+                    toggleChat();
+                    document.cookie = "chat_seen=true; max-age=86400; path=/";
+                }
+            }, 2500);
+        }
+
+        // =============================================
+        // Deep linking
+        // =============================================
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('chat') === 'open') {
+            setTimeout(() => {
+                if (!isOpen) toggleChat();
+            }, 800);
+        }
+
+        console.log('🤖 Procity AI Chat Widget v2.0 loaded');
+        console.log('📍 Brand: Programmers City Software Hub / Procity Software Hub');
+        console.log('💡 Try asking: "where is your location?" or "what services do you offer?"');
+
+    });
+</script>
