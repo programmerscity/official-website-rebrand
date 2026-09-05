@@ -1,5 +1,23 @@
 <?php
-// contact-send.php - with Professional Email Templates
+session_start();
+// contact-feedback.php
+// Rate limiting – prevent multiple submissions from same IP
+$ip = $_SERVER['REMOTE_ADDR'];
+$time_window = 300; // 5 minutes
+$max_requests = 3;
+
+if (!isset($_SESSION['contact_requests'])) {
+    $_SESSION['contact_requests'] = [];
+}
+
+$_SESSION['contact_requests'][] = time();
+$_SESSION['contact_requests'] = array_filter($_SESSION['contact_requests'], function ($t) use ($time_window) {
+    return $t > (time() - $time_window);
+});
+
+if (count($_SESSION['contact_requests']) > $max_requests) {
+    returnJson('error', 'Too many requests. Please try again later.');
+}
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -7,11 +25,29 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// Error logging
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/logs/contact-errors.log');
+    // Check honeypot – if filled, it's a bot
+    if (!empty($_POST['honeypot'])) {
+        // Silently reject without response
+        header('HTTP/1.1 403 Forbidden');
+        exit;
+    }
+
+    // Verify reCAPTCHA token
+    $recaptcha_token = $_POST['recaptcha_token'] ?? '';
+    $secret_key = $_ENV['RECAPTCHA_SECRET_KEY']; // Ensure this is set in your environment variables
+    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$recaptcha_token");
+    $response_keys = json_decode($response, true);
+
+    if (!$response_keys['success'] || $response_keys['score'] < 0.5) {
+        returnJson('error', 'Failed verification. Please try again.');
+    }
+
+    // 1. Sanitize and Capture Incoming Data
+    $fullname = htmlspecialchars(trim($_POST['fullname']));
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $phone = htmlspecialchars(trim($_POST['phone']));
+    $subject = htmlspecialchars(trim($_POST['subject']));
+    $message = htmlspecialchars(trim($_POST['message']));
 
 if (!is_dir(__DIR__ . '/logs')) {
     mkdir(__DIR__ . '/logs', 0755, true);
