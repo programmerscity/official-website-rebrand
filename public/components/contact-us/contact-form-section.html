@@ -51,6 +51,12 @@
                             placeholder="Describe your inquiry..."></textarea>
                     </div>
 
+                    <div style="position: absolute; left: -9999px; top: -9999px;">
+                        <label for="honeypot">Leave this field empty</label>
+                        <input type="text" id="honeypot" name="honeypot" value="">
+                    </div>
+                    <input type="hidden" id="recaptcha_token" name="recaptcha_token">
+
                     <!-- Status Message Container -->
                     <div id="form-status" class="mt-2"></div>
 
@@ -113,6 +119,14 @@
         `;
 
             try {
+                // Get reCAPTCHA token
+                grecaptcha.ready(function () {
+                    grecaptcha.execute('6Ldu_6otAAAAAEDiIz3CIIyAkSe6P0RQKEzdWMWT', { action: 'submit' }).then(function (token) {
+                        document.getElementById('recaptcha_token').value = token;
+                        // Then submit your form normally
+                    });
+                });
+
                 // 2. Send Asynchronous POST Request
                 const formData = new FormData(form);
                 const response = await fetch('contact-feedback.php', {

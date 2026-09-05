@@ -1,5 +1,23 @@
 <?php
+session_start();
 // contact-feedback.php
+// Rate limiting – prevent multiple submissions from same IP
+$ip = $_SERVER['REMOTE_ADDR'];
+$time_window = 300; // 5 minutes
+$max_requests = 3;
+
+if (!isset($_SESSION['contact_requests'])) {
+    $_SESSION['contact_requests'] = [];
+}
+
+$_SESSION['contact_requests'][] = time();
+$_SESSION['contact_requests'] = array_filter($_SESSION['contact_requests'], function ($t) use ($time_window) {
+    return $t > (time() - $time_window);
+});
+
+if (count($_SESSION['contact_requests']) > $max_requests) {
+    returnJson('error', 'Too many requests. Please try again later.');
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -9,6 +27,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header('Content-Type: application/json');
         echo json_encode(['status' => $status, 'message' => $message]);
         exit; // Stop further execution
+    }
+
+    // Check honeypot – if filled, it's a bot
+    if (!empty($_POST['honeypot'])) {
+        // Silently reject without response
+        header('HTTP/1.1 403 Forbidden');
+        exit;
+    }
+
+    // Verify reCAPTCHA token
+    $recaptcha_token = $_POST['recaptcha_token'] ?? '';
+    $secret_key = $_ENV['RECAPTCHA_SECRET_KEY']; // Ensure this is set in your environment variables
+    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$recaptcha_token");
+    $response_keys = json_decode($response, true);
+
+    if (!$response_keys['success'] || $response_keys['score'] < 0.5) {
+        returnJson('error', 'Failed verification. Please try again.');
     }
 
     // 1. Sanitize and Capture Incoming Data

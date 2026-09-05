@@ -80,6 +80,7 @@ if (isset($_GET['service'])) {
             }
         }
     </script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6Ldu_6otAAAAAEDiIz3CIIyAkSe6P0RQKEzdWMWT"></script>
 </head>
 
 <body class="bg-main-theme text-secondary font-inter">
