@@ -62,7 +62,7 @@
                     </div>
 
                     <!-- Cloudflare Turnstile Widget -->
-                    <div id="turnstile-widget" class="my-2"></div>
+                    <div id="turnstile-widget" class="my-1"></div>
 
                     <!-- Status Message Container -->
                     <div id="form-status" class="mt-2"></div>
@@ -102,52 +102,63 @@
     (function () {
         'use strict';
 
-        // ---- CONFIG ----
         const TURNSTILE_SITE_KEY = '<?php echo $_ENV["TURNSTILE_SITE_KEY"] ?? ""; ?>';
-        const TURNSTILE_ENABLED = true; // Set to false to disable Turnstile
+        const TURNSTILE_ENABLED = true;
 
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('contactForm');
             const submitBtn = document.getElementById('submitBtn');
             const formStatus = document.getElementById('form-status');
             const startTimeEl = document.getElementById('form_start_time');
-            const turnstileResponseEl = document.getElementById('cf_turnstile_response');
+            const turnstileRespEl = document.getElementById('cf_turnstile_response');
 
-            // Record form load time
             startTimeEl.value = Math.floor(Date.now() / 1000);
 
-            // Pre-fill subject from query string (if present)
+            // Pre-fill subject if from query string
             if (typeof service !== 'undefined' && service) {
                 document.querySelector('input[name="subject"]').value = service;
             }
 
-            // Show success banner if redirected with ?status=success
             if (typeof status !== 'undefined' && status === 'success') {
                 formStatus.className = 'p-4 rounded-xl bg-green-50 text-green-700 border border-green-200';
                 formStatus.innerHTML = '<p>Your message has been sent successfully!</p>';
             }
 
-            // Render Turnstile widget
-            if (TURNSTILE_ENABLED && typeof turnstile !== 'undefined') {
-                turnstile.render('#turnstile-widget', {
+            // ---- Render Turnstile (non-blocking) ----
+            let turnstileWidgetId = null;
+            function initTurnstile() {
+                if (!TURNSTILE_ENABLED || typeof turnstile === 'undefined') return;
+                turnstileWidgetId = turnstile.render('#turnstile-widget', {
                     sitekey: TURNSTILE_SITE_KEY,
-                    callback: function (token) {
-                        turnstileResponseEl.value = token;
-                    },
+                    callback: function (token) { turnstileRespEl.value = token; },
                     'error-callback': function () {
                         formStatus.className = 'p-4 rounded-xl bg-red-50 text-red-700 border border-red-200';
-                        formStatus.innerHTML = '<p>Failed to verify. Please refresh and try again.</p>';
+                        formStatus.innerHTML = '<p>Verification failed. Please refresh and try again.</p>';
                     },
                 });
             }
 
-            // Helper to reset button
+            // Wait for Turnstile script to be ready
+            if (typeof turnstile !== 'undefined') {
+                initTurnstile();
+            } else {
+                // Poll for turnstile object (max 5 seconds)
+                let waited = 0;
+                const poller = setInterval(function () {
+                    if (typeof turnstile !== 'undefined') {
+                        clearInterval(poller);
+                        initTurnstile();
+                    } else if ((waited += 100) >= 5000) {
+                        clearInterval(poller);
+                    }
+                }, 100);
+            }
+
             function resetButton() {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<span>Send Message</span>';
             }
 
-            // Helper to show status
             function showStatus(type, message) {
                 if (type === 'success') {
                     formStatus.className = 'p-4 rounded-xl bg-green-50 text-green-700 border border-green-200';
@@ -159,45 +170,39 @@
                 formStatus.innerHTML = '<p>' + message + '</p>';
             }
 
-            // Form submit
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
                 formStatus.innerHTML = '';
                 formStatus.className = '';
 
-                // Basic client-side validation
                 if (!form.checkValidity()) {
                     showStatus('error', 'Please fill in all required fields correctly.');
                     form.reportValidity();
                     return;
                 }
 
-                // Check Turnstile
-                if (TURNSTILE_ENABLED && !turnstileResponseEl.value) {
+                if (TURNSTILE_ENABLED && !turnstileRespEl.value) {
                     showStatus('error', 'Please complete the verification challenge.');
                     return;
                 }
 
-                // Show loading state
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = `
-                    <div class="flex items-center justify-center gap-2">
-                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span>Sending...</span>
-                    </div>
-                `;
+                submitBtn.innerHTML = '<div class="flex items-center justify-center gap-2"><svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Sending...</span></div>';
 
                 try {
                     const formData = new FormData(form);
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+
                     const response = await fetch('contact-send', {
                         method: 'POST',
                         body: formData,
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        signal: controller.signal
                     });
+
+                    clearTimeout(timeoutId);
 
                     const contentType = response.headers.get('content-type');
                     if (!contentType || !contentType.includes('application/json')) {
@@ -208,10 +213,9 @@
 
                     if (data.status === 'success') {
                         form.reset();
-                        // Reset Turnstile widget
-                        if (TURNSTILE_ENABLED && typeof turnstile !== 'undefined') {
-                            turnstile.reset();
-                            turnstileResponseEl.value = '';
+                        if (TURNSTILE_ENABLED && turnstileWidgetId !== null && typeof turnstile !== 'undefined') {
+                            turnstile.reset(turnstileWidgetId);
+                            turnstileRespEl.value = '';
                         }
                         startTimeEl.value = Math.floor(Date.now() / 1000);
                         showStatus('success', data.message || 'Your message has been sent successfully!');
@@ -219,8 +223,12 @@
                         showStatus('error', data.message || 'There was a problem sending your message.');
                     }
                 } catch (error) {
-                    console.error('Contact form error:', error);
-                    showStatus('error', error.message || 'An unexpected network error occurred. Please try again.');
+                    if (error.name === 'AbortError') {
+                        showStatus('error', 'Request timed out. Please check your connection and try again.');
+                    } else {
+                        console.error('Contact form error:', error);
+                        showStatus('error', error.message || 'An unexpected network error occurred.');
+                    }
                 } finally {
                     resetButton();
                 }
