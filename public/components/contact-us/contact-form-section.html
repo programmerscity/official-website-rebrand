@@ -193,7 +193,7 @@
                 try {
                     const formData = new FormData(form);
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+                    const timeoutId = setTimeout(() => controller.abort(), 45000); // 45s timeout
 
                     const response = await fetch('contact-send', {
                         method: 'POST',
@@ -224,7 +224,7 @@
                     }
                 } catch (error) {
                     if (error.name === 'AbortError') {
-                        showStatus('error', 'Request timed out. Please check your connection and try again.');
+                        showStatus('error', 'Request timed out. Please try again or call us at +234 9019 606166.');
                     } else {
                         console.error('Contact form error:', error);
                         showStatus('error', error.message || 'An unexpected network error occurred.');

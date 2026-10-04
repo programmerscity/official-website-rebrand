@@ -1,7 +1,10 @@
 <?php
 // =============================================
-// contact-send.php - Optimized Multi-Layer Defense
+// contact-send.php - Optimized with Background Email
 // =============================================
+
+// ---- Track start time for diagnostics ----
+$START = microtime(true);
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -28,7 +31,19 @@ function returnJson(string $status, string $message): void
     exit;
 }
 
-// ---- Log helper (only logs when blocking) ----
+// ---- Timing log helper (for diagnostics) ----
+function logTiming(string $step): void
+{
+    global $START, $logDir;
+    $elapsed = round(microtime(true) - $START, 3);
+    @file_put_contents(
+        $logDir . '/timing.log',
+        "[" . date('Y-m-d H:i:s') . "] $step: {$elapsed}s\n",
+        FILE_APPEND | LOCK_EX
+    );
+}
+
+// ---- Block log helper ----
 function logBlock(string $reason, array $data = []): void
 {
     global $logDir;
@@ -66,7 +81,8 @@ if ($formStart === 0 || $elapsed < 3) {
     logBlock('Too fast', ['elapsed' => $elapsed]);
     returnJson('success', 'Message sent.');
 }
-if ($elapsed > 7200) {
+if ($elapsed > 45000) { // 45 seconds
+    logBlock('Too slow', ['elapsed' => $elapsed]);
     returnJson('error', 'Your session expired. Please refresh and try again.');
 }
 
@@ -79,22 +95,19 @@ $phone    = trim($_POST['phone'] ?? '');
 $subject  = trim($_POST['subject'] ?? '');
 $message  = trim($_POST['message'] ?? '');
 
-// Required validation
 if ($fullname === '' || $email === '' || $subject === '' || $message === '') {
     returnJson('error', 'Please fill in all required fields.');
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     returnJson('error', 'Invalid email address.');
 }
-
-// Header injection prevention
 if (preg_match('/[\r\n]/', $fullname . $email . $subject)) {
     logBlock('Header injection');
     returnJson('error', 'Invalid input detected.');
 }
 
 // =============================================
-// LAYER 5: Fast Spam Scoring
+// LAYER 5: Spam Scoring
 // =============================================
 function isGibberish(string $text): bool
 {
@@ -102,17 +115,13 @@ function isGibberish(string $text): bool
     $len = strlen($clean);
     if ($len < 5) return false;
 
-    // Vowel/consonant ratio
     $vowels = preg_match_all('/[aeiouAEIOU]/', $clean);
     $consonants = preg_match_all('/[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]/', $clean);
 
     if ($consonants > 0 && $vowels === 0) return true;
     if ($vowels > 0 && $consonants > 0 && ($consonants / $vowels) > 6) return true;
-
-    // Long consonant runs
     if (preg_match('/[bcdfghjklmnpqrstvwxyz]{6,}/i', $clean)) return true;
 
-    // Random case transitions
     if ($len > 15) {
         $transitions = 0;
         for ($i = 1; $i < $len; $i++) {
@@ -120,7 +129,6 @@ function isGibberish(string $text): bool
         }
         if ($transitions / $len > 0.45) return true;
     }
-
     return false;
 }
 
@@ -129,7 +137,6 @@ function calculateSpamScore(string $name, string $email, string $phone, string $
     $score = 0;
     $reasons = [];
 
-    // Gibberish checks
     if (isGibberish($name)) {
         $score += 15;
         $reasons[] = 'Gibberish name';
@@ -143,7 +150,6 @@ function calculateSpamScore(string $name, string $email, string $phone, string $
         $reasons[] = 'Gibberish message';
     }
 
-    // Disposable email
     $disposable = [
         'mailinator.com',
         'guerrillamail.com',
@@ -166,7 +172,6 @@ function calculateSpamScore(string $name, string $email, string $phone, string $
         $reasons[] = 'Disposable email';
     }
 
-    // Spam keywords
     $keywords = [
         'viagra' => 20,
         'cialis' => 20,
@@ -192,14 +197,12 @@ function calculateSpamScore(string $name, string $email, string $phone, string $
         }
     }
 
-    // URLs
     $urlCount = preg_match_all('/https?:\/\//i', $message);
     if ($urlCount > 2) {
         $score += 15;
         $reasons[] = "Too many URLs ($urlCount)";
     }
 
-    // Invalid phone format
     if ($phone !== '' && !preg_match('/^[0-9+\-\s()]{7,20}$/', $phone)) {
         $score += 5;
         $reasons[] = 'Invalid phone format';
@@ -209,20 +212,18 @@ function calculateSpamScore(string $name, string $email, string $phone, string $
 }
 
 $spamResult = calculateSpamScore($fullname, $email, $phone, $subject, $message);
-$spamThreshold = 25;
-
-if ($spamResult['score'] >= $spamThreshold) {
+if ($spamResult['score'] >= 25) {
     logBlock('Spam score exceeded', [
         'score' => $spamResult['score'],
         'reasons' => $spamResult['reasons'],
-        'name' => $fullname,
-        'email' => $email,
     ]);
     returnJson('success', 'Message sent.');
 }
 
+logTiming('Spam checks done');
+
 // =============================================
-// LAYER 6: Rate Limiting (optimized)
+// LAYER 6: Rate Limiting
 // =============================================
 $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 $rateFile = $logDir . '/rate-' . md5($ip) . '.json';
@@ -232,7 +233,6 @@ if (is_file($rateFile)) {
     $raw = @file_get_contents($rateFile);
     if ($raw) $requests = json_decode($raw, true) ?: [];
 }
-
 $now = time();
 $requests = array_values(array_filter($requests, fn($t) => $t > ($now - 300)));
 
@@ -240,12 +240,11 @@ if (count($requests) >= 5) {
     logBlock('Rate limit exceeded', ['ip' => $ip]);
     returnJson('error', 'Too many requests. Please wait a few minutes and try again.');
 }
-
 $requests[] = $now;
 @file_put_contents($rateFile, json_encode($requests), LOCK_EX);
 
 // =============================================
-// LAYER 7: Cloudflare Turnstile (FAST cURL)
+// LAYER 7: Cloudflare Turnstile
 // =============================================
 $turnstileSecret   = $_ENV['TURNSTILE_SECRET_KEY'] ?? '';
 $turnstileResponse = $_POST['cf-turnstile-response'] ?? '';
@@ -265,8 +264,8 @@ if ($turnstileSecret !== '') {
             'remoteip' => $ip,
         ]),
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 5,   // 5-second timeout
-        CURLOPT_CONNECTTIMEOUT => 3,   // 3-second connect timeout
+        CURLOPT_TIMEOUT        => 5,
+        CURLOPT_CONNECTTIMEOUT => 3,
         CURLOPT_SSL_VERIFYPEER => true,
         CURLOPT_HTTPHEADER     => ['Content-Type: application/x-www-form-urlencoded'],
     ]);
@@ -276,7 +275,6 @@ if ($turnstileSecret !== '') {
 
     if ($curlError || !$verifyResult) {
         error_log('Turnstile cURL error: ' . $curlError);
-        // Fail-open: allow through if Cloudflare is unreachable
     } else {
         $verifyData = json_decode($verifyResult, true);
         if (empty($verifyData['success'])) {
@@ -286,10 +284,11 @@ if ($turnstileSecret !== '') {
     }
 }
 
-// =============================================
-// ALL CHECKS PASSED - BUILD & SEND EMAILS
-// =============================================
+logTiming('Turnstile done');
 
+// =============================================
+// BUILD EMAIL CONTENT
+// =============================================
 $safeName    = htmlspecialchars($fullname, ENT_QUOTES, 'UTF-8');
 $safePhone   = htmlspecialchars($phone, ENT_QUOTES, 'UTF-8');
 $safeSubject = htmlspecialchars($subject, ENT_QUOTES, 'UTF-8');
@@ -297,7 +296,14 @@ $safeMessage = nl2br(htmlspecialchars($message, ENT_QUOTES, 'UTF-8'));
 $safeEmail   = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
 $phoneDisplay = $safePhone !== '' ? $safePhone : '<span style="color:#475569;">Not Provided</span>';
 
-// ---- Admin email ----
+// Save the data for the background client email
+$clientEmailData = [
+    'email'   => $email,
+    'name'    => $fullname,
+    'subject' => $subject,
+];
+
+// ---- Admin email HTML ----
 $admin_body = '<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><title>New Inquiry - Procity Software Hub</title></head>
@@ -336,7 +342,7 @@ $admin_body = '<!DOCTYPE html>
 </body>
 </html>';
 
-// ---- Client email ----
+// ---- Client email HTML ----
 $client_body = '<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><title>We received your inquiry</title></head>
@@ -381,8 +387,26 @@ $client_body = '<!DOCTYPE html>
 </body>
 </html>';
 
-// ---- Send via SMTP ----
-$success = false;
+// Save client email payload to a file for background processing
+$pendingDir = $logDir . '/pending-emails';
+if (!is_dir($pendingDir)) {
+    @mkdir($pendingDir, 0755, true);
+}
+$pendingFile = $pendingDir . '/' . uniqid('email_', true) . '.json';
+@file_put_contents($pendingFile, json_encode([
+    'email'   => $email,
+    'name'    => $fullname,
+    'subject' => $subject,
+    'body'    => $client_body,
+    'created' => time(),
+]), LOCK_EX);
+
+// =============================================
+// SEND ADMIN EMAIL (Synchronous - Most Important)
+// =============================================
+logTiming('Before admin email');
+
+$adminSent = false;
 try {
     $mail = new PHPMailer(true);
     $mail->isSMTP();
@@ -393,33 +417,83 @@ try {
     $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION'] ?? 'ssl';
     $mail->Port       = (int) ($_ENV['MAIL_PORT'] ?? 465);
     $mail->CharSet    = 'UTF-8';
-    $mail->Timeout    = 15;
+    $mail->Timeout    = 10;
+    $mail->SMTPKeepAlive = true;
 
     $mail->setFrom('info@programmerscity.com', 'Procity Software Hub');
     $mail->addReplyTo($email, $fullname);
 
-    // Admin
     $mail->addAddress('info@programmerscity.com');
     $mail->Subject = 'New Inquiry: ' . $subject;
     $mail->Body    = $admin_body;
     $mail->AltBody = "New Inquiry from $fullname\nEmail: $email\nPhone: $phone\nSubject: $subject\n\n$message";
     $adminSent = $mail->send();
-
-    // Client
-    $mail->clearAddresses();
-    $mail->addAddress($email);
-    $mail->Subject = 'We received your inquiry, ' . $fullname;
-    $mail->Body    = $client_body;
-    $mail->AltBody = "Hello $fullname,\n\nThank you for contacting Procity Software Hub.\n\n$subject\n\nWe'll respond within 24 hours.\n\nCall: +234 9019 606166\nWhatsApp: https://wa.me/2349019606166";
-    $clientSent = $mail->send();
-
-    $success = $adminSent && $clientSent;
 } catch (Exception $e) {
-    error_log('PHPMailer error: ' . $e->getMessage());
+    error_log('Admin email error: ' . $e->getMessage());
 }
 
-if ($success) {
-    returnJson('success', 'Your message has been sent successfully!');
+logTiming('After admin email: ' . ($adminSent ? 'SUCCESS' : 'FAIL'));
+
+// =============================================
+// RESPOND TO USER IMMEDIATELY
+// =============================================
+if ($adminSent) {
+    // Deliver response, then close connection
+    header('Content-Type: application/json');
+    echo json_encode([
+        'status'  => 'success',
+        'message' => 'Your message has been sent successfully! We will get back to you shortly.',
+    ]);
+
+    // Flush the response to the browser and close the connection
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        // Fallback for non-FastCGI (e.g., Apache mod_php)
+        if (ob_get_level() > 0) {
+            @ob_end_flush();
+        }
+        @flush();
+    }
+
+    logTiming('Response sent, starting background client email');
+
+    // =============================================
+    // SEND CLIENT EMAIL IN BACKGROUND
+    // (User has already received their success response)
+    // =============================================
+    try {
+        $mail2 = new PHPMailer(true);
+        $mail2->isSMTP();
+        $mail2->Host       = $_ENV['MAIL_HOST']       ?? 'programmerscity.com';
+        $mail2->SMTPAuth   = true;
+        $mail2->Username   = $_ENV['MAIL_USERNAME']   ?? 'info@programmerscity.com';
+        $mail2->Password   = $_ENV['MAIL_PASSWORD']   ?? '';
+        $mail2->SMTPSecure = $_ENV['MAIL_ENCRYPTION'] ?? 'ssl';
+        $mail2->Port       = (int) ($_ENV['MAIL_PORT'] ?? 465);
+        $mail2->CharSet    = 'UTF-8';
+        $mail2->Timeout    = 10;
+
+        $mail2->setFrom('info@programmerscity.com', 'Procity Software Hub');
+        $mail2->addReplyTo('info@programmerscity.com', 'Procity Software Hub');
+        $mail2->addAddress($email, $fullname);
+        $mail2->Subject = 'We received your inquiry, ' . $fullname;
+        $mail2->Body    = $client_body;
+        $mail2->AltBody = "Hello $fullname,\n\nThank you for contacting Procity Software Hub.\n\n$subject\n\nWe'll respond within 24 hours.\n\nCall: +234 9019 606166\nWhatsApp: https://wa.me/2349019606166";
+
+        if ($mail2->send()) {
+            // Clean up the pending file
+            @unlink($pendingFile);
+            logTiming('Background client email: SUCCESS');
+        } else {
+            logTiming('Background client email: FAILED');
+        }
+    } catch (Exception $e) {
+        error_log('Client email error: ' . $e->getMessage());
+        logTiming('Background client email: EXCEPTION');
+    }
+
+    exit;
 } else {
     returnJson('error', 'There was a problem sending your message. Please call us at +234 9019 606166.');
 }
