@@ -1,22 +1,27 @@
 <?php
-// contact-send.php - with Professional Email Templates
+// =============================================
+// contact-send.php - Custom Spam Scoring + Turnstile
+// =============================================
 
+// ---- 1. Load environment ----
 require __DIR__ . '/../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+use Dotenv\Dotenv;
 
-// Error logging
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/logs/contact-errors.log');
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
+// ---- 2. Start session ----
+session_start();
+
+// ---- 3. Create logs directory ----
 if (!is_dir(__DIR__ . '/logs')) {
     mkdir(__DIR__ . '/logs', 0755, true);
 }
 
+// ---- 4. JSON response helper ----
 function returnJson(string $status, string $message): void
 {
     header('Content-Type: application/json');
@@ -24,19 +29,118 @@ function returnJson(string $status, string $message): void
     exit;
 }
 
+// ---- 5. Log helper ----
+function logBlock(string $reason, array $data = []): void
+{
+    $log  = "[" . date('Y-m-d H:i:s') . "] BLOCKED: $reason\n";
+    $log .= "IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . "\n";
+    $log .= "UA: " . ($_SERVER['HTTP_USER_AGENT'] ?? 'unknown') . "\n";
+    if (!empty($data)) {
+        $log .= "Data: " . json_encode($data) . "\n";
+    }
+    $log .= "-----\n";
+    file_put_contents(__DIR__ . '/logs/spam-blocks.log', $log, FILE_APPEND);
+}
+
 // =============================================
-// 1. Validate POST
+// LAYER 1: Request Method Check
 // =============================================
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     returnJson('error', 'Invalid request method.');
 }
 
-$fullname = htmlspecialchars(trim($_POST['fullname'] ?? ''));
-$email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-$phone = htmlspecialchars(trim($_POST['phone'] ?? ''));
-$subject = htmlspecialchars(trim($_POST['subject'] ?? ''));
-$message = htmlspecialchars(trim($_POST['message'] ?? ''));
+// =============================================
+// LAYER 2: Honeypot Check
+// =============================================
+if (!empty($_POST['honeypot'])) {
+    logBlock('Honeypot field filled');
+    returnJson('success', 'Message sent.'); // Silent success
+}
 
+// =============================================
+// LAYER 3: Minimum Submission Time Check
+// =============================================
+$form_start_time = (int) ($_POST['form_start_time'] ?? 0);
+$elapsed = time() - $form_start_time;
+
+if ($form_start_time === 0 || $elapsed < 3) {
+    logBlock('Form submitted too fast', ['elapsed' => $elapsed]);
+    returnJson('success', 'Message sent.');
+}
+if ($elapsed > 7200) {
+    logBlock('Form session expired', ['elapsed' => $elapsed]);
+    returnJson('error', 'Your session expired. Please refresh and try again.');
+}
+
+// =============================================
+// LAYER 4: IP-Based Rate Limiting
+// =============================================
+$ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+$rate_file = __DIR__ . '/logs/rate-limit-' . md5($ip) . '.json';
+$time_window = 300; // 5 minutes
+$max_requests = 3;
+
+$requests = [];
+if (file_exists($rate_file)) {
+    $requests = json_decode(file_get_contents($rate_file), true) ?: [];
+}
+$requests = array_filter($requests, fn($t) => $t > (time() - $time_window));
+
+if (count($requests) >= $max_requests) {
+    logBlock('Rate limit exceeded', ['ip' => $ip, 'count' => count($requests)]);
+    returnJson('error', 'Too many requests. Please try again in a few minutes.');
+}
+$requests[] = time();
+file_put_contents($rate_file, json_encode($requests));
+
+// =============================================
+// LAYER 5: Cloudflare Turnstile Validation
+// =============================================
+$turnstile_secret = $_ENV['TURNSTILE_SECRET_KEY'] ?? '';
+$turnstile_response = $_POST['cf-turnstile-response'] ?? '';
+
+if (!empty($turnstile_secret)) {
+    if (empty($turnstile_response)) {
+        logBlock('Missing Turnstile token');
+        returnJson('error', 'Verification failed. Please refresh and try again.');
+    }
+
+    $verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+    $data = [
+        'secret' => $turnstile_secret,
+        'response' => $turnstile_response,
+        'remoteip' => $ip,
+    ];
+
+    $options = [
+        'http' => [
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data),
+        ],
+    ];
+    $context  = stream_context_create($options);
+    $result = file_get_contents($verify_url, false, $context);
+    $response = json_decode($result, true);
+
+    if (!$response || !$response['success']) {
+        logBlock('Turnstile validation failed', ['response' => $response]);
+        returnJson('error', 'Verification failed. Please try again.');
+    }
+}
+
+// =============================================
+// LAYER 6: Sanitize Input
+// =============================================
+$fullname = htmlspecialchars(trim($_POST['fullname'] ?? ''), ENT_QUOTES, 'UTF-8');
+$email    = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+$phone    = htmlspecialchars(trim($_POST['phone'] ?? ''), ENT_QUOTES, 'UTF-8');
+$subject  = htmlspecialchars(trim($_POST['subject'] ?? ''), ENT_QUOTES, 'UTF-8');
+$message  = htmlspecialchars(trim($_POST['message'] ?? ''), ENT_QUOTES, 'UTF-8');
+
+// =============================================
+// LAYER 7: Required Field Validation
+// =============================================
 if (empty($fullname) || empty($email) || empty($subject) || empty($message)) {
     returnJson('error', 'Please fill in all required fields.');
 }
@@ -45,379 +149,318 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 // =============================================
-// 2. Build Professional Email Templates
+// LAYER 8: CUSTOM SPAM SCORING ENGINE
 // =============================================
+function calculateSpamScore(string $name, string $email, string $phone, string $subject, string $message): array
+{
+    $score = 0;
+    $reasons = [];
+
+    // --- Gibberish Detection (Name) ---
+    if (isGibberish($name)) {
+        $score += 10;
+        $reasons[] = "Gibberish name";
+    }
+    // --- Gibberish Detection (Subject) ---
+    if (isGibberish($subject)) {
+        $score += 10;
+        $reasons[] = "Gibberish subject";
+    }
+    // --- Gibberish Detection (Message) ---
+    if (isGibberish($message)) {
+        $score += 10;
+        $reasons[] = "Gibberish message";
+    }
+
+    // --- Disposable Email Check ---
+    $disposable_domains = [
+        'mailinator.com',
+        'guerrillamail.com',
+        'tempmail.com',
+        '10minutemail.com',
+        'throwawaymail.com',
+        'yopmail.com',
+        'getnada.com',
+        'sharklasers.com',
+        'temp-mail.org',
+        'fakeinbox.com',
+        'trashmail.com',
+        'dispostable.com'
+    ];
+    $email_domain = strtolower(substr(strrchr($email, "@"), 1));
+    if (in_array($email_domain, $disposable_domains)) {
+        $score += 15;
+        $reasons[] = "Disposable email domain";
+    }
+
+    // --- Spam Keywords ---
+    $spam_keywords = [
+        'viagra' => 15,
+        'cialis' => 15,
+        'casino' => 10,
+        'porn' => 15,
+        'bitcoin' => 5,
+        'crypto investment' => 10,
+        'seo services' => 8,
+        'guest post' => 8,
+        'backlink' => 8,
+        'buy followers' => 10,
+        'make money fast' => 10,
+        'work from home' => 5,
+        'loan offer' => 8,
+        'winner' => 8,
+        'claim your prize' => 15,
+        'urgent' => 2
+    ];
+    $combined = strtolower($name . ' ' . $subject . ' ' . $message);
+    foreach ($spam_keywords as $keyword => $points) {
+        if (strpos($combined, $keyword) !== false) {
+            $score += $points;
+            $reasons[] = "Keyword: $keyword (+$points)";
+        }
+    }
+
+    // --- URL Analysis ---
+    $url_count = preg_match_all('/https?:\/\//i', $message);
+    if ($url_count > 0) {
+        $score += ($url_count * 5);
+        $reasons[] = "Contains $url_count URL(s)";
+    }
+    if ($url_count > 2) {
+        $score += 10;
+        $reasons[] = "Excessive URLs";
+    }
+
+    // --- Phone Number Validity (Basic) ---
+    if (!empty($phone) && !preg_match('/^[0-9+\-\s()]{7,20}$/', $phone)) {
+        $score += 5;
+        $reasons[] = "Invalid phone format";
+    }
+
+    // --- Header Injection ---
+    if (preg_match('/[\r\n]/', $name . $email . $subject)) {
+        $score += 20;
+        $reasons[] = "Header injection attempt";
+    }
+
+    return ['score' => $score, 'reasons' => $reasons];
+}
+
+// --- Helper: Gibberish Detector ---
+function isGibberish(string $text): bool
+{
+    $clean = preg_replace('/\s+/', '', $text);
+    if (strlen($clean) < 2) return false;
+
+    $vowels     = preg_match_all('/[aeiouAEIOU]/', $clean);
+    $consonants = preg_match_all('/[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]/', $clean);
+
+    if ($consonants > 0 && $vowels === 0) return true;
+    if ($vowels > 0 && $consonants > 0) {
+        $ratio = $consonants / $vowels;
+        if ($ratio > 6) return true;
+    }
+    if (preg_match('/[bcdfghjklmnpqrstvwxyz]{6,}/i', $clean)) return true;
+
+    $upperCount = preg_match_all('/[A-Z]/', $clean);
+    $lowerCount = preg_match_all('/[a-z]/', $clean);
+    if (strlen($clean) > 15 && $upperCount > 3 && $lowerCount > 3) {
+        $transitions = 0;
+        $len = strlen($clean);
+        for ($i = 1; $i < $len; $i++) {
+            if (ctype_upper($clean[$i - 1]) !== ctype_upper($clean[$i])) $transitions++;
+        }
+        if ($transitions / $len > 0.5) return true;
+    }
+    return false;
+}
+
+// --- Calculate the score ---
+$spamResult = calculateSpamScore($fullname, $email, $phone, $subject, $message);
+
+// --- Set your spam threshold ---
+// A score of 20 or more is considered spam. Adjust this value to be more or less strict.
+$spam_threshold = 20;
+
+if ($spamResult['score'] >= $spam_threshold) {
+    logBlock('Spam score exceeded', [
+        'score' => $spamResult['score'],
+        'reasons' => $spamResult['reasons'],
+        'name' => $fullname,
+        'email' => $email,
+        'subject' => $subject
+    ]);
+    returnJson('success', 'Message sent.'); // Silent success to fool bots
+}
 
 // =============================================
-// 2a. ADMIN NOTIFICATION EMAIL
+// ALL CHECKS PASSED - BUILD AND SEND EMAILS
 // =============================================
+
+// ---- Admin email ----
 $admin_body = '
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Inquiry - Procity Software Hub</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #f8fafc; -webkit-text-size-adjust: 100%;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" style="background-color: #f8fafc; padding: 40px 0;">
+
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f8fafc;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:40px 0;">
         <tr>
             <td align="center">
-                <!-- Main Container -->
-                <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; max-width: 600px; width: 100%;">
-                    
-                    <!-- Header -->
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08);overflow:hidden;max-width:600px;">
                     <tr>
-                        <td style="background: linear-gradient(135deg, #0b83de 0%, #004c98 100%); padding: 32px 40px;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="center">
-                                        <img src="https://programmerscity.com/public/assets/images/procity-logo-2.png" alt="Procity Software Hub" style="display: block; max-width: 60px; height: auto; margin-bottom: 8px;" />
-                                        <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.5px;">📩 New Contact Form Inquiry</h1>
-                                    </td>
-                                </tr>
-                            </table>
+                        <td style="background:linear-gradient(135deg,#0b83de,#004c98);padding:32px 40px;text-align:center;">
+                            <img src="https://programmerscity.com/public/assets/images/favicon.png" alt="Procity" style="display:block;max-width:60px;margin:0 auto 8px;" />
+                            <h1 style="color:#fff;font-size:24px;margin:0;">📩 New Contact Form Inquiry</h1>
                         </td>
                     </tr>
-                    
-                    <!-- Body -->
                     <tr>
-                        <td style="padding: 40px 40px 30px;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <td style="padding:40px;">
+                            <p style="color:#0f172a;font-size:16px;"><strong>You have received a new inquiry</strong> from your website contact form.</p>
+                            <table width="100%" style="background:#f8fafc;border-radius:12px;padding:20px;border-left:4px solid #0b83de;">
                                 <tr>
-                                    <td style="padding-bottom: 8px;">
-                                        <p style="color: #0f172a; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">
-                                            <strong>You have received a new inquiry</strong> from your website contact form. Details are below:
-                                        </p>
-                                    </td>
+                                    <td style="padding-bottom:8px;"><strong>Full Name:</strong> ' . $fullname . '</td>
                                 </tr>
-                                
-                                <!-- Inquiry Details -->
                                 <tr>
-                                    <td style="background-color: #f8fafc; border-radius: 12px; padding: 20px 24px; border-left: 4px solid #0b83de;">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                            <tr>
-                                                <td style="padding-bottom: 12px;">
-                                                    <p style="margin: 0; font-size: 12px; color: #475569; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Sender Information</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 4px;">
-                                                    <p style="margin: 0; font-size: 15px; color: #0f172a;"><strong>Full Name:</strong> ' . $fullname . '</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 4px;">
-                                                    <p style="margin: 0; font-size: 15px; color: #0f172a;"><strong>Email:</strong> <a href="mailto:' . $email . '" style="color: #0b83de; text-decoration: none;">' . $email . '</a></p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 4px;">
-                                                    <p style="margin: 0; font-size: 15px; color: #0f172a;"><strong>Phone:</strong> ' . (!empty($phone) ? $phone : '<span style="color: #475569;">Not Provided</span>') . '</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 4px;">
-                                                    <p style="margin: 0; font-size: 15px; color: #0f172a;"><strong>Subject:</strong> ' . $subject . '</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-top: 16px; border-top: 1px solid #e2e8f0;">
-                                                    <p style="margin: 0 0 8px 0; font-size: 12px; color: #475569; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Message</p>
-                                                    <p style="margin: 0; font-size: 15px; color: #0f172a; line-height: 1.6; background-color: #ffffff; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0;">' . nl2br($message) . '</p>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
+                                    <td style="padding-bottom:8px;"><strong>Email:</strong> <a href="mailto:' . $email . '" style="color:#0b83de;">' . $email . '</a></td>
                                 </tr>
-                                
-                                <!-- Quick Actions -->
                                 <tr>
-                                    <td style="padding-top: 24px;">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                            <tr>
-                                                <td align="center" style="padding-bottom: 8px;">
-                                                    <a href="mailto:' . $email . '" style="display: inline-block; background-color: #0b83de; color: #ffffff; font-weight: 600; font-size: 14px; padding: 12px 32px; border-radius: 50px; text-decoration: none; margin: 0 6px 8px 6px;">Reply to Client</a>
-                                                    <a href="tel:+2349019606166" style="display: inline-block; background-color: #0f172a; color: #ffffff; font-weight: 600; font-size: 14px; padding: 12px 32px; border-radius: 50px; text-decoration: none; margin: 0 6px 8px 6px;">📞 Call Client</a>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
+                                    <td style="padding-bottom:8px;"><strong>Phone:</strong> ' . (!empty($phone) ? $phone : 'Not Provided') . '</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom:8px;"><strong>Subject:</strong> ' . $subject . '</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top:12px;border-top:1px solid #e2e8f0;"><strong>Message:</strong><br>' . nl2br($message) . '</td>
                                 </tr>
                             </table>
+                            <p style="text-align:center;margin-top:24px;">
+                                <a href="mailto:' . $email . '" style="display:inline-block;background:#0b83de;color:#fff;font-weight:600;padding:12px 32px;border-radius:50px;text-decoration:none;">Reply to Client</a>
+                            </p>
                         </td>
                     </tr>
-                    
-                    <!-- Footer -->
                     <tr>
-                        <td style="background-color: #f8fafc; padding: 20px 40px; border-top: 1px solid #e2e8f0;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="center">
-                                        <p style="margin: 0 0 4px 0; font-size: 14px; color: #0f172a; font-weight: 700;">Procity Software Hub</p>
-                                        <p style="margin: 0 0 4px 0; font-size: 13px; color: #475569;">181 Douglas Road, By Wetheral Junction, Owerri-Aba Road, Owerri, Imo State</p>
-                                        <p style="margin: 0 0 8px 0; font-size: 13px; color: #475569;">
-                                            <a href="tel:+2349019606166" style="color: #0b83de; text-decoration: none;">+234 9019 606166</a> &bull;
-                                            <a href="mailto:info@programmerscity.com" style="color: #0b83de; text-decoration: none;">info@programmerscity.com</a>
-                                        </p>
-                                        <p style="margin: 0; font-size: 12px; color: #475569;">
-                                            <a href="https://www.linkedin.com/company/programmers-city" style="color: #0b83de; text-decoration: none; margin: 0 6px;">LinkedIn</a> &bull;
-                                            <a href="https://www.youtube.com/@programmerscity" style="color: #0b83de; text-decoration: none; margin: 0 6px;">YouTube</a> &bull;
-                                            <a href="https://www.instagram.com/programmers.city/" style="color: #0b83de; text-decoration: none; margin: 0 6px;">Instagram</a> &bull;
-                                            <a href="https://www.facebook.com/programmerscityhub/" style="color: #0b83de; text-decoration: none; margin: 0 6px;">Facebook</a> &bull;
-                                            <a href="https://x.com/programmerscity" style="color: #0b83de; text-decoration: none; margin: 0 6px;">X</a>
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
+                        <td style="background:#f8fafc;padding:20px 40px;border-top:1px solid #e2e8f0;text-align:center;">
+                            <p style="margin:0;font-size:14px;color:#0f172a;font-weight:700;">Procity Software Hub</p>
+                            <p style="margin:4px 0;font-size:13px;color:#475569;">181 Douglas Road, By Wetheral Junction, Owerri-Aba Road, Owerri, Imo State</p>
+                            <p style="margin:0;font-size:13px;color:#475569;">
+                                <a href="tel:+2349019606166" style="color:#0b83de;">+234 9019 606166</a> &bull;
+                                <a href="mailto:info@programmerscity.com" style="color:#0b83de;">info@programmerscity.com</a>
+                            </p>
                         </td>
                     </tr>
-                    
                 </table>
-                <!-- End Main Container -->
-                
-                <!-- Footer Note -->
-                <p style="text-align: center; font-size: 12px; color: #475569; margin-top: 24px;">
-                    This email was sent from your website contact form.
-                </p>
             </td>
         </tr>
     </table>
 </body>
+
 </html>';
 
-// =============================================
-// 2b. CLIENT ACKNOWLEDGMENT EMAIL (with WhatsApp & Call Buttons)
-// =============================================
+// ---- Client acknowledgment email ----
 $client_body = '
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>We received your inquiry - Procity Software Hub</title>
+    <title>We received your inquiry</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #f8fafc; -webkit-text-size-adjust: 100%;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" style="background-color: #f8fafc; padding: 40px 0;">
+
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f8fafc;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:40px 0;">
         <tr>
             <td align="center">
-                <!-- Main Container -->
-                <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; max-width: 600px; width: 100%;">
-                    
-                    <!-- Header -->
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08);overflow:hidden;max-width:600px;">
                     <tr>
-                        <td style="background: linear-gradient(135deg, #0b83de 0%, #004c98 100%); padding: 32px 40px;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="center">
-                                        <img src="https://programmerscity.com/public/assets/images/procity-logo-2.png" alt="Procity Software Hub" style="display: block; max-width: 60px; height: auto; margin-bottom: 8px;" />
-                                        <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.5px;">✅ Thank You for Reaching Out!</h1>
-                                    </td>
-                                </tr>
-                            </table>
+                        <td style="background:linear-gradient(135deg,#0b83de,#004c98);padding:32px 40px;text-align:center;">
+                            <img src="https://programmerscity.com/public/assets/images/favicon.png" alt="Procity" style="display:block;max-width:60px;margin:0 auto 8px;" />
+                            <h1 style="color:#fff;font-size:24px;margin:0;">✅ Thank You for Reaching Out!</h1>
                         </td>
                     </tr>
-                    
-                    <!-- Body -->
                     <tr>
-                        <td style="padding: 40px 40px 30px;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="padding-bottom: 8px;">
-                                        <p style="color: #0f172a; font-size: 16px; line-height: 1.6; margin: 0 0 8px 0;">
-                                            Hello <strong>' . $fullname . '</strong>,
-                                        </p>
-                                        <p style="color: #0f172a; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                                            Thank you for reaching out to <strong>Procity Software Hub</strong>! We have successfully received your inquiry regarding:
-                                        </p>
-                                        <div style="background-color: #f8fafc; border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; border-left: 3px solid #0b83de;">
-                                            <p style="margin: 0; font-size: 16px; color: #0b83de; font-weight: 600;">"' . $subject . '"</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Next Steps -->
-                                <tr>
-                                    <td>
-                                        <h3 style="color: #0f172a; font-size: 18px; font-weight: 700; margin: 0 0 16px 0;">📋 What Happens Next?</h3>
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                            <tr>
-                                                <td style="padding-bottom: 12px;">
-                                                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                        <tr>
-                                                            <td width="32" valign="top" style="padding-right: 12px;">
-                                                                <span style="display: inline-block; width: 24px; height: 24px; background-color: #0b83de; color: #ffffff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700;">1</span>
-                                                            </td>
-                                                            <td>
-                                                                <p style="margin: 0; font-size: 15px; color: #0f172a;"><strong>Review</strong> – Our team is currently reviewing your message and requirements.</p>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 12px;">
-                                                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                        <tr>
-                                                            <td width="32" valign="top" style="padding-right: 12px;">
-                                                                <span style="display: inline-block; width: 24px; height: 24px; background-color: #0b83de; color: #ffffff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700;">2</span>
-                                                            </td>
-                                                            <td>
-                                                                <p style="margin: 0; font-size: 15px; color: #0f172a;"><strong>Response</strong> – We will get back to you within <strong>24 hours</strong> via email or phone.</p>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 12px;">
-                                                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                        <tr>
-                                                            <td width="32" valign="top" style="padding-right: 12px;">
-                                                                <span style="display: inline-block; width: 24px; height: 24px; background-color: #0b83de; color: #ffffff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700;">3</span>
-                                                            </td>
-                                                            <td>
-                                                                <p style="margin: 0; font-size: 15px; color: #0f172a;"><strong>Consultation</strong> – We\'ll schedule a consultation to discuss your project in detail.</p>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Call to Action: WhatsApp & Call Buttons -->
-                                <tr>
-                                    <td style="padding-top: 24px;">
-                                        <div style="background-color: #f8fafc; border-radius: 12px; padding: 20px 24px; border: 1px solid #e2e8f0; text-align: center;">
-                                            <p style="margin: 0 0 12px 0; font-size: 15px; color: #0f172a; font-weight: 700;">📞 Need Immediate Assistance?</p>
-                                            <p style="margin: 0 0 16px 0; font-size: 14px; color: #475569;">
-                                                Get in touch with us right now via phone or WhatsApp.
-                                            </p>
-                                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                <tr>
-                                                    <td align="center" style="padding: 4px 4px;">
-                                                        <a href="tel:+2349019606166" style="display: inline-block; background-color: #0b83de; color: #ffffff; font-weight: 600; font-size: 15px; padding: 14px 28px; border-radius: 50px; text-decoration: none; margin: 4px; min-width: 160px;">
-                                                            📞 Call Us Now
-                                                        </a>
-                                                    </td>
-                                                    <td align="center" style="padding: 4px 4px;">
-                                                        <a href="https://wa.me/2349019606166" target="_blank" rel="noopener" style="display: inline-block; background-color: #25D366; color: #ffffff; font-weight: 600; font-size: 15px; padding: 14px 28px; border-radius: 50px; text-decoration: none; margin: 4px; min-width: 160px;">
-                                                            💬 WhatsApp Us
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                            <p style="margin: 12px 0 0 0; font-size: 13px; color: #475569;">
-                                                <strong>Phone:</strong> +234 9019 606166 &bull; <strong>Hours:</strong> Mon–Sat, 9 AM – 6 PM (WAT)
-                                            </p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Social Links -->
-                                <tr>
-                                    <td style="padding-top: 24px;">
-                                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="text-align: center;">
-                                            <tr>
-                                                <td align="center">
-                                                    <p style="margin: 0 0 12px 0; font-size: 13px; color: #475569; font-weight: 600;">Connect With Us</p>
-                                                    <p style="margin: 0; font-size: 13px; color: #475569;">
-                                                        <a href="https://www.linkedin.com/company/programmers-city" target="_blank" rel="noopener" style="color: #0b83de; text-decoration: none; margin: 0 8px;">LinkedIn</a>
-                                                        <a href="https://www.youtube.com/@programmerscity" target="_blank" rel="noopener" style="color: #0b83de; text-decoration: none; margin: 0 8px;">YouTube</a>
-                                                        <a href="https://www.instagram.com/programmers.city/" target="_blank" rel="noopener" style="color: #0b83de; text-decoration: none; margin: 0 8px;">Instagram</a>
-                                                        <a href="https://www.facebook.com/programmerscityhub/" target="_blank" rel="noopener" style="color: #0b83de; text-decoration: none; margin: 0 8px;">Facebook</a>
-                                                        <a href="https://x.com/programmerscity" target="_blank" rel="noopener" style="color: #0b83de; text-decoration: none; margin: 0 8px;">X</a>
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
+                        <td style="padding:40px;">
+                            <p style="color:#0f172a;font-size:16px;">Hello <strong>' . $fullname . '</strong>,</p>
+                            <p style="color:#0f172a;font-size:16px;">Thank you for reaching out to <strong>Procity Software Hub</strong>! We have received your inquiry regarding:</p>
+                            <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;margin:20px 0;border-left:3px solid #0b83de;">
+                                <p style="margin:0;color:#0b83de;font-weight:600;">"' . $subject . '"</p>
+                            </div>
+                            <h3 style="color:#0f172a;">📋 What Happens Next?</h3>
+                            <ol style="color:#0f172a;line-height:1.8;">
+                                <li><strong>Review</strong> – Our team is reviewing your message.</li>
+                                <li><strong>Response</strong> – We will respond within <strong>24 hours</strong>.</li>
+                                <li><strong>Consultation</strong> – We\'ll schedule a call to discuss your project.</li>
+                            </ol>
+                            <div style="background:#f8fafc;border-radius:12px;padding:20px;border:1px solid #e2e8f0;text-align:center;margin-top:24px;">
+                                <p style="margin:0 0 12px;color:#0f172a;font-weight:700;">📞 Need Immediate Assistance?</p>
+                                <p style="margin:0 0 16px;font-size:14px;color:#475569;">Reach us via phone or WhatsApp.</p>
+                                <a href="tel:+2349019606166" style="display:inline-block;background:#0b83de;color:#fff;font-weight:600;padding:14px 28px;border-radius:50px;text-decoration:none;margin:4px;">📞 Call Us</a>
+                                <a href="https://wa.me/2349019606166" style="display:inline-block;background:#25D366;color:#fff;font-weight:600;padding:14px 28px;border-radius:50px;text-decoration:none;margin:4px;">💬 WhatsApp</a>
+                            </div>
                         </td>
                     </tr>
-                    
-                    <!-- Footer -->
                     <tr>
-                        <td style="background-color: #f8fafc; padding: 20px 40px; border-top: 1px solid #e2e8f0;">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="center">
-                                        <p style="margin: 0 0 4px 0; font-size: 14px; color: #0f172a; font-weight: 700;">Procity Software Hub</p>
-                                        <p style="margin: 0 0 4px 0; font-size: 13px; color: #475569;">181 Douglas Road, By Wetheral Junction, Owerri-Aba Road, Owerri, Imo State</p>
-                                        <p style="margin: 0 0 8px 0; font-size: 13px; color: #475569;">
-                                            <a href="tel:+2349019606166" style="color: #0b83de; text-decoration: none;">+234 9019 606166</a> &bull;
-                                            <a href="mailto:info@programmerscity.com" style="color: #0b83de; text-decoration: none;">info@programmerscity.com</a>
-                                        </p>
-                                        <p style="margin: 0; font-size: 11px; color: #475569;">
-                                            <a href="https://programmerscity.com" style="color: #0b83de; text-decoration: none;">programmerscity.com</a>
-                                        </p>
-                                        <p style="margin: 8px 0 0 0; font-size: 11px; color: #475569; font-style: italic;">
-                                            This is an automated confirmation. Please do not reply directly to this email.
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
+                        <td style="background:#f8fafc;padding:20px 40px;border-top:1px solid #e2e8f0;text-align:center;">
+                            <p style="margin:0;font-size:14px;color:#0f172a;font-weight:700;">Procity Software Hub</p>
+                            <p style="margin:4px 0;font-size:13px;color:#475569;">181 Douglas Road, By Wetheral Junction, Owerri-Aba Road, Owerri, Imo State</p>
+                            <p style="margin:0;font-size:13px;color:#475569;">
+                                <a href="tel:+2349019606166" style="color:#0b83de;">+234 9019 606166</a> &bull;
+                                <a href="mailto:info@programmerscity.com" style="color:#0b83de;">info@programmerscity.com</a>
+                            </p>
                         </td>
                     </tr>
-                    
                 </table>
-                <!-- End Main Container -->
             </td>
         </tr>
     </table>
 </body>
+
 </html>';
 
-// =============================================
-// 3. Send via SMTP
-// =============================================
+// ---- Send via SMTP ----
+$success = false;
 try {
     $mail = new PHPMailer(true);
-
-    // SMTP Configuration (cPanel)
     $mail->isSMTP();
-    $mail->Host       = 'programmerscity.com';
+    $mail->Host       = $_ENV['MAIL_HOST']       ?? 'programmerscity.com';
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'info@programmerscity.com';
-    $mail->Password   = 'Procity2024*';
-    $mail->SMTPSecure = 'ssl';
-    $mail->Port       = 465;
+    $mail->Username   = $_ENV['MAIL_USERNAME']   ?? 'info@programmerscity.com';
+    $mail->Password   = $_ENV['MAIL_PASSWORD']   ?? '';
+    $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION'] ?? 'ssl';
+    $mail->Port       = $_ENV['MAIL_PORT']       ?? 465;
     $mail->CharSet    = 'UTF-8';
 
     $mail->setFrom('info@programmerscity.com', 'Procity Software Hub');
     $mail->addReplyTo($email, $fullname);
 
-    // Admin Email
+    // Admin
     $mail->addAddress('info@programmerscity.com');
-    $mail->Subject = "New Inquiry: " . $subject;
+    $mail->Subject = 'New Inquiry: ' . $subject;
     $mail->Body    = $admin_body;
-    $mail->AltBody = "New Inquiry from $fullname\nEmail: $email\nPhone: " . (!empty($phone) ? $phone : 'Not Provided') . "\nSubject: $subject\n\nMessage:\n$message";
+    $mail->AltBody = "New Inquiry from $fullname\nEmail: $email\nPhone: $phone\nSubject: $subject\n\n$message";
     $admin_sent = $mail->send();
 
-    // Client Acknowledgment Email
-    $mail->clearAddresses();
-    $mail->addAddress($email);
-    $mail->Subject = "We received your inquiry, $fullname";
-    $mail->Body    = $client_body;
-    $mail->AltBody = "Hello $fullname,\n\nThank you for reaching out to Procity Software Hub! We have received your inquiry regarding: \"$subject\".\n\nOur team will get back to you within 24 hours.\n\nFor urgent inquiries, call us at +234 9019 606166 or WhatsApp us at https://wa.me/2349019606166.\n\nWarm regards,\nThe Procity Software Hub Team";
-    $client_sent = $mail->send();
+    // Client
+    // $mail->clearAddresses();
+    // $mail->addAddress($email);
+    // $mail->Subject = 'We received your inquiry, ' . $fullname;
+    // $mail->Body    = $client_body;
+    // $mail->AltBody = "Hello $fullname,\n\nThank you for contacting Procity Software Hub.\n\n$subject\n\nWe'll respond within 24 hours.\n\nCall: +234 9019 606166\nWhatsApp: https://wa.me/2349019606166";
+    // $client_sent = $mail->send();
 
-    $success = $admin_sent && $client_sent;
+    // $success = $admin_sent && $client_sent;
+    $success = $admin_sent;
 } catch (Exception $e) {
-    error_log("PHPMailer error: " . $e->getMessage());
-    $success = false;
+    error_log('PHPMailer error: ' . $e->getMessage());
 }
 
-// =============================================
-// 4. Response
-// =============================================
+// ---- Final response ----
 if ($success) {
-    returnJson('success', 'Your message has been sent successfully! We will get back to you shortly.');
+    returnJson('success', 'Your message has been sent successfully!');
 } else {
-    returnJson('error', 'There was a problem sending your message. Please try again or call us directly at +234 9019 606166.');
+    returnJson('error', 'There was a problem sending your message. Please call us at +234 9019 606166.');
 }
-
-?>

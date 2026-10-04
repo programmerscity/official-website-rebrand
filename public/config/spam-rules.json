@@ -1,0 +1,32 @@
+{
+    "version": 1,
+    "thresholds": {
+        "minimumMatches": 2,
+        "minimumScore": 4
+    },
+    "indicators": {
+        "names": [
+            "Known Spam Sender"
+        ],
+        "emails": [
+            "spam@example.com"
+        ],
+        "keywords": {
+            "winner": 3,
+            "claim your prize": 4,
+            "urgent": 1,
+            "bitcoin": 2,
+            "crypto investment": 3,
+            "seo services": 2,
+            "guest post": 2,
+            "backlink": 2,
+            "buy followers": 3,
+            "make money fast": 3,
+            "work from home": 2,
+            "viagra": 5,
+            "cialis": 5,
+            "casino": 4,
+            "porn": 5
+        }
+    }
+}
